@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from '@nestjs/mongoose';
+import { UserGender, UserRole, UserStatus } from 'src/user/utils/enum';
 
 export const userOption: SchemaOptions = {
   versionKey: false,
@@ -8,13 +9,40 @@ export const userOption: SchemaOptions = {
 @Schema(userOption)
 export class UserDocument {
   @Prop()
-  username: string;
+  firstName: string;
+
+  @Prop()
+  lastName: string;
+
+  @Prop({ enum: UserRole })
+  role: UserRole;
+
+  @Prop({ enum: UserGender })
+  gender: UserGender;
+  @Prop({ enum: UserStatus, default: UserStatus.ACTIVE })
+  status: UserStatus;
+  @Prop({ nullable: true, unique: true })
+  studentId?: string;
+  @Prop({ nullable: true, unique: true })
+  teacherId?: string;
+
+  @Prop({ maxLength: 20, minLength: 10, unique: true })
+  nationalId: string;
+
+  @Prop({ maxLength: 12 })
+  phone: string;
+
+  @Prop()
+  address: string;
 
   @Prop()
   password: string;
 
-  @Prop()
-  token: string;
+  @Prop({ nullable: true })
+  token?: string;
+
+  @Prop({ default: Date.now })
+  createdAt: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserDocument);

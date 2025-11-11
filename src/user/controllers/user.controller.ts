@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
 import { UserService } from '../services/user.service';
-import { CreateUserDto } from '../dtos/user.dto';
+import { CreateStudentDto } from '../dtos/user-student.dto';
 import { HttpResponseDto } from '../utils/util.dto';
 import { ApiResponse } from '@nestjs/swagger';
 
@@ -19,7 +19,9 @@ export class UserController {
   @ApiResponse({
     type: HttpResponseDto,
   })
-  createUser(@Body() createUserDto: CreateUserDto): Promise<HttpResponseDto> {
+  createUser(
+    @Body() createUserDto: CreateStudentDto,
+  ): Promise<HttpResponseDto> {
     return this.userService.createUser(createUserDto);
   }
 }

@@ -1,8 +1,9 @@
 import { UserDocument } from '../database/schema/user.schema';
-import { CreateUserDto } from '../dtos/user.dto';
+import { CreateStudentDto } from '../dtos/user-student.dto';
 
 export interface UserRepositoryPort {
   getAll(): Promise<UserDocument[]>;
-  create(item: CreateUserDto): Promise<UserDocument>;
+  create(item: CreateStudentDto): Promise<UserDocument>;
+  createStudent(item: CreateStudentDto): Promise<UserDocument>;
   update(id: string, item: any);
 }
