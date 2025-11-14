@@ -19,5 +19,6 @@ const repositories: Provider[] = [
   ],
   controllers: [UserController, UserStudentController],
   providers: [UserService, UserStudentService, ...repositories],
+  exports: [UserService, UserStudentService, ...repositories],
 })
 export class UserModule {}

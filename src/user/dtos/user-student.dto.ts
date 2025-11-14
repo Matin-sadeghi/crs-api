@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsString, MaxLength, MinLength } from 'class-validator';
-import { UserGender } from '../utils/enum';
+import { UserGender } from '../../utils/enum';
 
 export class CreateStudentDto {
   @ApiProperty({ minLength: 3 })

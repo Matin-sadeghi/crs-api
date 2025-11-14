@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { UserRepositoryPort } from 'src/user/interface/user.repository.port';
 import { UserDocument } from '../schema/user.schema';
 import { CreateStudentDto } from 'src/user/dtos/user-student.dto';
-import { UserRole } from 'src/user/utils/enum';
+import { UserRole } from 'src/utils/enum';
 
 @Injectable()
 export class UserRepository implements UserRepositoryPort {
@@ -28,5 +28,18 @@ export class UserRepository implements UserRepositoryPort {
 
   update(id: string, item: any) {
     return this._repository.findByIdAndUpdate(id, item);
+  }
+  updateTokens(id: string, accessToken: string, refreshToken: string) {
+    return this._repository.findByIdAndUpdate(id, {
+      accessToken,
+      refreshToken,
+    });
+  }
+  findByStudentId(studentId: string): Promise<UserDocument | null> {
+    return this._repository.findOne({ studentId });
+  }
+
+  findByUserId(userId: string): Promise<UserDocument | null> {
+    return this._repository.findById(new Types.ObjectId(userId));
   }
 }

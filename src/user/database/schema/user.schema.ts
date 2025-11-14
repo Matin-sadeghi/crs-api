@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from '@nestjs/mongoose';
-import { UserGender, UserRole, UserStatus } from 'src/user/utils/enum';
+import { Types } from 'mongoose';
+import { UserGender, UserRole, UserStatus } from 'src/utils/enum';
 
 export const userOption: SchemaOptions = {
   versionKey: false,
@@ -8,6 +9,9 @@ export const userOption: SchemaOptions = {
 
 @Schema(userOption)
 export class UserDocument {
+  @Prop({ type: Types.ObjectId })
+  _id: Types.ObjectId;
+
   @Prop()
   firstName: string;
 
@@ -39,7 +43,9 @@ export class UserDocument {
   password: string;
 
   @Prop({ nullable: true })
-  token?: string;
+  accessToken?: string;
+  @Prop({ nullable: true })
+  refreshToken?: string;
 
   @Prop({ default: Date.now })
   createdAt: Date;
