@@ -30,7 +30,7 @@ export class UserRepository implements UserRepositoryPort {
     return this._repository.findByIdAndUpdate(id, item);
   }
   updateTokens(id: string, accessToken: string, refreshToken: string) {
-    return this._repository.findByIdAndUpdate(id, {
+    return this._repository.findByIdAndUpdate(new Types.ObjectId(id), {
       accessToken,
       refreshToken,
     });
