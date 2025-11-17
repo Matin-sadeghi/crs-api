@@ -11,6 +11,8 @@ export const userOption: SchemaOptions = {
 export class UserDocument {
   @Prop({ type: Types.ObjectId })
   _id: Types.ObjectId;
+  @Prop()
+  username: string;
 
   @Prop()
   firstName: string;
@@ -25,10 +27,6 @@ export class UserDocument {
   gender: UserGender;
   @Prop({ enum: UserStatus, default: UserStatus.ACTIVE })
   status: UserStatus;
-  @Prop({ nullable: true, unique: true })
-  studentId?: string;
-  @Prop({ nullable: true, unique: true })
-  teacherId?: string;
 
   @Prop({ maxLength: 20, minLength: 10, unique: true })
   nationalId: string;

@@ -30,14 +30,11 @@ export class UserStudentService {
   }
 
   async findByStudentId(studentId: string): Promise<UserDocument | null> {
-    return this.userRepository.findByStudentId(studentId);
+    return this.userRepository.findByUsername(studentId);
   }
 
-  async loginStudent(
-    studentId: string,
-    password: string,
-  ): Promise<UserDocument> {
-    const user = await this.userRepository.findByStudentId(studentId);
+  async login(username: string, password: string): Promise<UserDocument> {
+    const user = await this.userRepository.findByUsername(username);
     if (!user) {
       throw new NotFoundException('User not found');
     }

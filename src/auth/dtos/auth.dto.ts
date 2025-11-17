@@ -5,7 +5,7 @@ export class LoginDto {
   @ApiProperty({ minLength: 3 })
   @IsString()
   @MinLength(3)
-  studentId!: string;
+  username!: string;
 
   @ApiProperty({ minLength: 3 })
   @IsString()

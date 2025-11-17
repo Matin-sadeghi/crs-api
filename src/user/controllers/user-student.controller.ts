@@ -43,7 +43,7 @@ export class UserStudentController {
       firstName: user.firstName,
       lastName: user.lastName,
       role: user.role,
-      studentId: user.studentId,
+      username: user.username,
       status: user.status,
     };
   }

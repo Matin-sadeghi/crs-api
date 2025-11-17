@@ -20,8 +20,8 @@ export class AuthService {
   async login(
     loginDto: LoginDto,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const user = await this.userStudentService.loginStudent(
-      loginDto.studentId,
+    const user = await this.userStudentService.login(
+      loginDto.username,
       loginDto.password,
     );
     const tokens = this.createLoginToken(user);
@@ -98,8 +98,7 @@ export class AuthService {
             status: user.status,
             firstName: user.firstName,
             lastName: user.lastName,
-            studentId: user.studentId,
-            teacherId: user.teacherId,
+            username: user.username,
           },
         },
         { expiresIn: '1h' },
@@ -112,8 +111,7 @@ export class AuthService {
             status: user.status,
             firstName: user.firstName,
             lastName: user.lastName,
-            studentId: user.studentId,
-            teacherId: user.teacherId,
+            username: user.username,
           },
         },
         { expiresIn: '7d' },

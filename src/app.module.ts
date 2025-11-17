@@ -5,11 +5,15 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { LessonModule } from './lesson/lesson.module';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
     UserModule,
     AuthModule,
+    LessonModule,
+    SeedModule,
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRootAsync({
       inject: [ConfigService],

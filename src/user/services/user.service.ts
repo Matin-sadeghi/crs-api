@@ -19,7 +19,7 @@ export class UserService {
     return 'Hello World!';
   }
   async createUser(createUserDto: CreateStudentDto): Promise<HttpResponseDto> {
-    await this.userRepository.create(createUserDto);
+    await this.userRepository.createStudent(createUserDto);
     return { status: HttpStatus.CREATED, message: 'User created successfully' };
   }
   async fetchUserById(userId: string): Promise<UserDocument> {

@@ -5,6 +5,7 @@ import { UserRepositoryPort } from 'src/user/interface/user.repository.port';
 import { UserDocument } from '../schema/user.schema';
 import { CreateStudentDto } from 'src/user/dtos/user-student.dto';
 import { UserRole } from 'src/utils/enum';
+import { CreateAdminDto } from 'src/user/dtos/user-admin.dto';
 
 @Injectable()
 export class UserRepository implements UserRepositoryPort {
@@ -18,12 +19,23 @@ export class UserRepository implements UserRepositoryPort {
     return this._repository.find().exec();
   }
 
-  create(item: CreateStudentDto): Promise<UserDocument> {
-    return this._repository.create(item);
+  createAdmin(item: CreateAdminDto): Promise<UserDocument> {
+    return this._repository.create({
+      ...item,
+      _id: new Types.ObjectId(),
+      role: UserRole.ADMIN,
+    });
+  }
+  getAllAdmins(): Promise<UserDocument[]> {
+    return this._repository.find({ role: UserRole.ADMIN }).exec();
   }
 
   createStudent(item: CreateStudentDto): Promise<UserDocument> {
-    return this._repository.create({ ...item, role: UserRole.STUDENT });
+    return this._repository.create({
+      ...item,
+      _id: new Types.ObjectId(),
+      role: UserRole.STUDENT,
+    });
   }
 
   update(id: string, item: any) {
@@ -35,8 +47,8 @@ export class UserRepository implements UserRepositoryPort {
       refreshToken,
     });
   }
-  findByStudentId(studentId: string): Promise<UserDocument | null> {
-    return this._repository.findOne({ studentId });
+  findByUsername(username: string): Promise<UserDocument | null> {
+    return this._repository.findOne({ username });
   }
 
   findByUserId(userId: string): Promise<UserDocument | null> {
