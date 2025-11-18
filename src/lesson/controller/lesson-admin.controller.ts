@@ -16,10 +16,14 @@ import { UserDocument } from 'src/user/database/schema/user.schema';
 import { User } from 'src/utils/decorators/auth.decorator';
 import { UserRole } from 'src/utils/enum';
 import { LessonAdminService } from '../services/lesson-admin.service';
-import { CreateLessonDto, UpdateLessonDto } from '../dtos/lesson-admin.dto';
+import {
+  CreateLessonDto,
+  UpdateLessonDto,
+  LessonResponseDto,
+} from '../dtos/lesson-admin.dto';
 import { LessonDocument } from '../database/schema/lesson.schema';
 import { HttpResponseDto } from 'src/utils/util.dto';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('/lesson-admin')
 @ApiBearerAuth('JWT-auth')
@@ -30,18 +34,31 @@ export class LessonAdminController {
   ) {}
   @Get()
   @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: 'Get all lessons' })
+  @ApiResponse({
+    type: LessonResponseDto,
+    isArray: true,
+  })
   getAllLessons(): Promise<LessonDocument[]> {
     return this.lessonAdminService.getAllLessons();
   }
 
   @Get(':id')
   @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: 'Get one lesson' })
+  @ApiResponse({
+    type: LessonResponseDto,
+  })
   getOneLesson(@Param('id') id: string): Promise<LessonDocument> {
     return this.lessonAdminService.getOneLesson(id);
   }
 
   @Post()
   @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: 'Create a new lesson' })
+  @ApiResponse({
+    type: HttpResponseDto,
+  })
   createLesson(
     @User() user: UserDocument,
     @Body() createLessonDto: CreateLessonDto,
@@ -54,12 +71,20 @@ export class LessonAdminController {
 
   @Delete(':id')
   @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: 'Delete a lesson' })
+  @ApiResponse({
+    type: HttpResponseDto,
+  })
   deleteLesson(@Param('id') id: string): Promise<HttpResponseDto> {
     return this.lessonAdminService.deleteLesson(id);
   }
 
   @Put(':id')
   @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: 'Update a lesson' })
+  @ApiResponse({
+    type: HttpResponseDto,
+  })
   updateLesson(
     @Param('id') id: string,
     @Body() updateLessonDto: UpdateLessonDto,

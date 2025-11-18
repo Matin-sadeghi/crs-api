@@ -19,3 +19,13 @@ export class RefreshTokenDto {
   @IsNotEmpty({ message: 'Refresh token is required' })
   refreshToken!: string;
 }
+
+export class LoginResponseDto {
+  @ApiProperty({ description: 'Access token' })
+  @IsString()
+  accessToken!: string;
+
+  @ApiProperty({ description: 'Refresh token' })
+  @IsString()
+  refreshToken!: string;
+}

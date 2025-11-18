@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { LoginDto, RefreshTokenDto } from '../dtos/auth.dto';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { LoginDto, LoginResponseDto, RefreshTokenDto } from '../dtos/auth.dto';
 import { AuthService } from '../services/auth.service';
 
 @ApiTags('auth')
@@ -10,16 +10,21 @@ export class AuthController {
 
   @Post('login')
   @ApiOperation({ summary: 'Login user and get access token' })
-  async login(
-    @Body() loginDto: LoginDto,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  @ApiResponse({
+    type: LoginResponseDto,
+  })
+  async login(@Body() loginDto: LoginDto): Promise<LoginResponseDto> {
     return this.authService.login(loginDto);
   }
 
   @Post('refresh')
+  @ApiOperation({ summary: 'Refresh access token' })
+  @ApiResponse({
+    type: LoginResponseDto,
+  })
   async refresh(
     @Body() refreshTokenDto: RefreshTokenDto,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  ): Promise<LoginResponseDto> {
     return this.authService.refreshToken(refreshTokenDto);
   }
 }
