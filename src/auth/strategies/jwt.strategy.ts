@@ -27,7 +27,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     if (!userId) {
       throw new UnauthorizedException('Invalid token payload');
     }
-    console.log('userId', userId);
 
     const user = await this.userService.fetchUserById(userId);
     if (!user) {

@@ -4,7 +4,6 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { UserDocument } from 'src/user/database/schema/user.schema';
-import { UserStudentService } from 'src/user/services/user-student.service';
 import { UserService } from 'src/user/services/user.service';
 import { LoginDto, RefreshTokenDto } from '../dtos/auth.dto';
 
@@ -13,14 +12,13 @@ export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-    private readonly userStudentService: UserStudentService,
     private readonly userService: UserService,
   ) {}
 
   async login(
     loginDto: LoginDto,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const user = await this.userStudentService.login(
+    const user = await this.userService.validateCredentials(
       loginDto.username,
       loginDto.password,
     );
@@ -58,8 +56,6 @@ export class AuthService {
       if (!user) {
         throw new UnauthorizedException('User not found');
       }
-
-      console.log(user, refreshToken);
 
       // Verify the refresh token matches the one stored in database
       if (user.refreshToken !== refreshToken) {
