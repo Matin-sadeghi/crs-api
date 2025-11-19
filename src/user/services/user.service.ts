@@ -43,6 +43,19 @@ export class UserService {
     }
     return user;
   }
+  async updatePassword(
+    userId: string,
+    password: string,
+  ): Promise<UserDocument | null> {
+    const updatedUser = await this.userRepository.updatePassword(
+      userId,
+      password,
+    );
+    if (!updatedUser) {
+      throw new NotFoundException('User not found');
+    }
+    return updatedUser;
+  }
   async updateTokens(
     id: string,
     accessToken: string,

@@ -54,4 +54,14 @@ export class UserRepository implements UserRepositoryPort {
   findByUserId(userId: string): Promise<UserDocument | null> {
     return this._repository.findById(new Types.ObjectId(userId));
   }
+  updatePassword(
+    userId: string,
+    password: string,
+  ): Promise<UserDocument | null> {
+    return this._repository
+      .findByIdAndUpdate(new Types.ObjectId(userId), {
+        password,
+      })
+      .exec();
+  }
 }

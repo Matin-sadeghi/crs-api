@@ -1,11 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { UserDocument } from 'src/user/database/schema/user.schema';
 import { UserService } from 'src/user/services/user.service';
-import { LoginDto, RefreshTokenDto } from '../dtos/auth.dto';
+import { ChangePasswordDto, LoginDto, RefreshTokenDto } from '../dtos/auth.dto';
+import { HttpResponseDto } from 'src/utils/util.dto';
+import { comparePassword, hashPassword } from 'src/utils/password';
 
 @Injectable()
 export class AuthService {
@@ -79,6 +86,29 @@ export class AuthService {
       }
       throw new UnauthorizedException('Invalid or expired refresh token');
     }
+  }
+  async changePassword(
+    changePasswordDto: ChangePasswordDto,
+    userId: string,
+  ): Promise<HttpResponseDto> {
+    if (
+      changePasswordDto.newPassword !== changePasswordDto.confirmNewPassword
+    ) {
+      throw new BadRequestException(
+        'New password and confirm new password do not match',
+      );
+    }
+    const user = await this.userService.fetchUserById(userId);
+    const isMatch = await comparePassword(
+      changePasswordDto.oldPassword,
+      user.password,
+    );
+    if (!isMatch) {
+      throw new BadRequestException('Old password is incorrect');
+    }
+    const hashedPassword = await hashPassword(changePasswordDto.newPassword);
+    await this.userService.updatePassword(userId, hashedPassword);
+    return { status: HttpStatus.OK, message: 'Password changed successfully' };
   }
 
   createLoginToken(user: UserDocument): {

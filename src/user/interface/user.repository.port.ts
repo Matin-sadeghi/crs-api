@@ -11,4 +11,8 @@ export interface UserRepositoryPort {
   findByUserId(userId: string): Promise<UserDocument | null>;
   updateTokens(id: string, accessToken: string, refreshToken: string);
   update(id: string, item: any);
+  updatePassword(
+    userId: string,
+    password: string,
+  ): Promise<UserDocument | null>;
 }

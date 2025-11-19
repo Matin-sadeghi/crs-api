@@ -29,3 +29,23 @@ export class LoginResponseDto {
   @IsString()
   refreshToken!: string;
 }
+
+export class ChangePasswordDto {
+  @ApiProperty({ description: 'Old password' })
+  @IsString()
+  @MinLength(3)
+  @IsNotEmpty({ message: 'Old password is required' })
+  oldPassword!: string;
+
+  @ApiProperty({ description: 'New password' })
+  @IsString()
+  @MinLength(3)
+  @IsNotEmpty({ message: 'New password is required' })
+  newPassword!: string;
+
+  @ApiProperty({ description: 'Confirm new password' })
+  @IsString()
+  @MinLength(3)
+  @IsNotEmpty({ message: 'Confirm new password is required' })
+  confirmNewPassword!: string;
+}
