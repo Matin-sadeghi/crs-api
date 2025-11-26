@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { LessonModule } from './lesson/lesson.module';
@@ -21,6 +22,7 @@ import { StudentModule } from './student/student.module';
         uri: config.getOrThrow<string>('MONGO_URI_CONN'),
       }),
     }),
+    ProfessorModule,
   ],
   controllers: [],
   providers: [],
