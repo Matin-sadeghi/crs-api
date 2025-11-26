@@ -1,12 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsString, MaxLength, MinLength } from 'class-validator';
 import { UserGender } from '../../utils/enum';
+import { Types } from 'mongoose';
 
-export class CreateStudentDto {
+export class CreateStudentUserDto {
   @ApiProperty({ minLength: 3 })
   @IsString()
   @MinLength(3)
   firstName!: string;
+  @ApiProperty({ minLength: 3 })
+  @IsString()
+  @MinLength(3)
+  username: string;
 
   @ApiProperty({ minLength: 3 })
   @IsString()
@@ -20,7 +25,8 @@ export class CreateStudentDto {
   @ApiProperty({ minLength: 3 })
   @IsString()
   @MinLength(3)
-  studentId!: string;
+  student?: Types.ObjectId;
+
   @ApiProperty({ minLength: 10, maxLength: 20 })
   @IsString()
   @MinLength(10)
@@ -37,8 +43,14 @@ export class CreateStudentDto {
   @IsString()
   @MinLength(3)
   address!: string;
+
   @ApiProperty({ minLength: 3 })
   @IsString()
   @MinLength(3)
   password!: string;
+
+  @ApiProperty({ minLength: 3 })
+  @IsString()
+  @MinLength(3)
+  confirmPassword!: string;
 }

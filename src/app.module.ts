@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { LessonModule } from './lesson/lesson.module';
 import { SeedModule } from './seed/seed.module';
+import { StudentModule } from './student/student.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { SeedModule } from './seed/seed.module';
     AuthModule,
     LessonModule,
     SeedModule,
+    StudentModule,
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRootAsync({
       inject: [ConfigService],

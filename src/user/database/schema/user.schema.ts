@@ -14,10 +14,10 @@ export class UserDocument {
   @Prop()
   username: string;
 
-  @Prop()
+  @Prop({ minLength: 3, maxLength: 100 })
   firstName: string;
 
-  @Prop()
+  @Prop({ minLength: 3, maxLength: 100 })
   lastName: string;
 
   @Prop({ enum: UserRole })
@@ -25,6 +25,7 @@ export class UserDocument {
 
   @Prop({ enum: UserGender })
   gender: UserGender;
+
   @Prop({ enum: UserStatus, default: UserStatus.ACTIVE })
   status: UserStatus;
 
@@ -47,6 +48,10 @@ export class UserDocument {
 
   @Prop({ default: Date.now })
   createdAt: Date;
+
+  // Relations
+  @Prop({ type: Types.ObjectId, ref: 'StudentDocument', required: false })
+  student: Types.ObjectId;
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserDocument);

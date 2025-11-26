@@ -1,28 +1,37 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Model, Types } from 'mongoose';
-import { UserDocument } from '../../../user/database/schema/user.schema';
-import { CreateStudentDto } from '../../dtos/student.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { StudentDocument } from '../schema/student.schema';
+import {
+  StudentRepositoryPort,
+  CreateStudentData,
+} from 'src/student/interface/student.repository.port';
 
 @Injectable()
-export class StudentRepository {
-  constructor(
-    @Inject('STUDENT_MODEL')
-    private readonly studentModel: Model<UserDocument>,
-  ) {}
+export class StudentRepository implements StudentRepositoryPort {
+  private _repository: Model<StudentDocument>;
 
-  async create(createStudentDto: CreateStudentDto): Promise<UserDocument> {
-    return this.studentModel.create({
-      ...createStudentDto,
-      _id: new Types.ObjectId(),
-      role: 'STUDENT',  // Add role here
+  constructor(
+    @InjectModel(StudentDocument.name) repository: Model<StudentDocument>,
+  ) {
+    this._repository = repository;
+  }
+
+  async create(
+    createStudentData: CreateStudentData,
+    _id: Types.ObjectId,
+  ): Promise<StudentDocument> {
+    return this._repository.create({
+      ...createStudentData,
+      _id,
     });
   }
 
-  async findAll(): Promise<UserDocument[]> {
-    return this.studentModel.find({ role: 'STUDENT' }).exec();
+  async findAll(): Promise<StudentDocument[]> {
+    return this._repository.find({}).exec();
   }
 
-  async findById(id: string): Promise<UserDocument | null> {
-    return this.studentModel.findById(id).exec();
+  async findById(id: string): Promise<StudentDocument | null> {
+    return this._repository.findById(id).exec();
   }
 }

@@ -1,13 +1,29 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { UserDocument } from 'src/user/database/schema/user.schema';
+import { Prop, Schema, SchemaFactory, SchemaOptions } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
 
-@Schema()
-export class StudentDocument extends UserDocument {
-  @Prop()
-  grade?: string;
+export const studentOption: SchemaOptions = {
+  versionKey: false,
+  collection: 'student',
+};
+
+@Schema(studentOption)
+export class StudentDocument {
+  @Prop({ type: Types.ObjectId })
+  _id: Types.ObjectId;
+
+  @Prop({ unique: true })
+  studentId: string;
 
   @Prop()
-  major?: string;
+  major: string;
+
+  @Prop({ type: Types.ObjectId, ref: 'UserDocument', required: true })
+  user: Types.ObjectId;
+  @Prop({ default: Date.now })
+  createdAt: Date;
+
+  @Prop({ default: Date.now, nullable: true })
+  updatedAt: Date;
 }
 
 export const StudentSchema = SchemaFactory.createForClass(StudentDocument);

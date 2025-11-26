@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
 
-export class HttpResponseDto {
+export class HttpResponseDto<T = unknown> {
   @IsNumber()
   @ApiProperty({ example: 200 })
   status: number;
@@ -11,5 +10,5 @@ export class HttpResponseDto {
   @ApiProperty({ example: 'Success' })
   message: string;
 
-  data?: any;
+  data?: T;
 }

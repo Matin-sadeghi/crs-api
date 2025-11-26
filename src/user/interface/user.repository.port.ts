@@ -1,10 +1,10 @@
 import { UserDocument } from '../database/schema/user.schema';
 import { CreateAdminDto } from '../dtos/user-admin.dto';
-import { CreateStudentDto } from '../dtos/user-student.dto';
+import { CreateStudentUserDto } from '../dtos/user-student.dto';
 
 export interface UserRepositoryPort {
   getAll(): Promise<UserDocument[]>;
-  createStudent(item: CreateStudentDto): Promise<UserDocument>;
+  createStudent(item: CreateStudentUserDto): Promise<UserDocument>;
   createAdmin(item: CreateAdminDto): Promise<UserDocument>;
   getAllAdmins(): Promise<UserDocument[]>;
   findByUsername(studentId: string): Promise<UserDocument | null>;

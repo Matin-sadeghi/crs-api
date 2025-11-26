@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { UserRepositoryPort } from 'src/user/interface/user.repository.port';
 import { UserDocument } from '../schema/user.schema';
-import { CreateStudentDto } from 'src/user/dtos/user-student.dto';
+import { CreateStudentUserDto } from 'src/user/dtos/user-student.dto';
 import { UserRole } from 'src/utils/enum';
 import { CreateAdminDto } from 'src/user/dtos/user-admin.dto';
 
@@ -30,7 +30,7 @@ export class UserRepository implements UserRepositoryPort {
     return this._repository.find({ role: UserRole.ADMIN }).exec();
   }
 
-  createStudent(item: CreateStudentDto): Promise<UserDocument> {
+  createStudent(item: CreateStudentUserDto): Promise<UserDocument> {
     return this._repository.create({
       ...item,
       _id: new Types.ObjectId(),

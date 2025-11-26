@@ -1,12 +1,15 @@
 import { Module, Provider } from '@nestjs/common';
-import { MongooseModule, getConnectionToken } from '@nestjs/mongoose';
+import { MongooseModule } from '@nestjs/mongoose';
 
 import { StudentController } from './controller/student.controller';
-import { StudentService } from './services/student.service';
 import { StudentRepository } from './database/repository/student.repository';
+import { StudentService } from './services/student.service';
+import { UserModule } from '../user/user.module';
 
-import { UserDocument, UserSchema } from '../user/database/schema/user.schema';
-import { StudentSchema } from './database/schema/student.schema';
+import {
+  StudentDocument,
+  StudentSchema,
+} from './database/schema/student.schema';
 
 const repositories: Provider[] = [
   { provide: 'STUDENT_REPOSITORY', useClass: StudentRepository },
@@ -16,23 +19,14 @@ const repositories: Provider[] = [
   imports: [
     MongooseModule.forFeature([
       {
-        name: UserDocument.name,
-        schema: UserSchema,
-        collection: 'user',
+        name: StudentDocument.name,
+        schema: StudentSchema,
       },
     ]),
+    UserModule,
   ],
   controllers: [StudentController],
-  providers: [
-    StudentService,
-    ...repositories,
-    {
-      provide: 'STUDENT_MODEL',
-      useFactory: (connection) =>
-        connection.model(UserDocument.name).discriminator('STUDENT', StudentSchema),
-      inject: [getConnectionToken()],  // <-- Fixed here
-    },
-  ],
-  exports: [StudentService, ...repositories],
+  providers: [StudentService, ...repositories],
+  exports: [],
 })
 export class StudentModule {}
