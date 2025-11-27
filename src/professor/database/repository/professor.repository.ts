@@ -1,28 +1,29 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { UserDocument } from '../../../user/database/schema/user.schema';
-import { CreateProfessorDto } from '../../dtos/professor.dto';
+import {
+  CreateProfessorData,
+  ProfessorRepositoryPort,
+} from 'src/professor/interface/professor.repository.port';
+import { ProfessorDocument } from '../schema/professor.schema';
 
 @Injectable()
-export class ProfessorRepository {
+export class ProfessorRepository implements ProfessorRepositoryPort {
+  private _repository: Model<ProfessorDocument>;
+
   constructor(
-    @Inject('PROFESSOR_MODEL')
-    private readonly professorModel: Model<UserDocument>,
-  ) {}
+    @InjectModel(ProfessorDocument.name) repository: Model<ProfessorDocument>,
+  ) {
+    this._repository = repository;
+  }
 
-  async create(createProfessorDto: CreateProfessorDto): Promise<UserDocument> {
-    return this.professorModel.create({
-      ...createProfessorDto,
-      _id: new Types.ObjectId(),
-      role: 'TEACHER',  // Match enum value used for professor roles
+  create(
+    createProfessorData: CreateProfessorData,
+    _id: Types.ObjectId,
+  ): Promise<ProfessorDocument> {
+    return this._repository.create({
+      ...createProfessorData,
+      _id,
     });
-  }
-
-  async findAll(): Promise<UserDocument[]> {
-    return this.professorModel.find({ role: 'TEACHER' }).exec();
-  }
-
-  async findById(id: string): Promise<UserDocument | null> {
-    return this.professorModel.findById(id).exec();
   }
 }

@@ -52,6 +52,9 @@ export class UserDocument {
   // Relations
   @Prop({ type: Types.ObjectId, ref: 'StudentDocument', required: false })
   student: Types.ObjectId;
+
+  @Prop({ type: Types.ObjectId, ref: 'ProfessorDocument', required: false })
+  professor: Types.ObjectId;
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserDocument);

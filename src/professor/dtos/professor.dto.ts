@@ -1,15 +1,58 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
-import { CreateProfessorDto as BaseCreateUserDto } from 'src/user/dtos/user-professor.dto'; // assuming a generic CreateUserDto for user
+import { IsEnum, IsString, MaxLength, MinLength } from 'class-validator';
+import { UserGender } from 'src/utils/enum';
 
-export class CreateProfessorDto extends BaseCreateUserDto {
-  @ApiProperty({ required: false })
-  @IsOptional()
+export class CreateProfessorDto {
+  @ApiProperty({ minLength: 3 })
   @IsString()
-  department?: string;
+  @MinLength(3)
+  firstName!: string;
 
-  @ApiProperty({ required: false })
-  @IsOptional()
+  @ApiProperty({ minLength: 3 })
   @IsString()
-  officeNumber?: string;
+  @MinLength(3)
+  lastName!: string;
+
+  @ApiProperty({ enum: UserGender })
+  @IsEnum(UserGender)
+  gender!: UserGender;
+
+  @ApiProperty({ minLength: 10, maxLength: 20 })
+  @IsString()
+  @MinLength(10)
+  @MaxLength(20)
+  nationalId: string;
+
+  @ApiProperty({ minLength: 10, maxLength: 12 })
+  @IsString()
+  @MinLength(10)
+  @MaxLength(12)
+  phone!: string;
+
+  @ApiProperty({ minLength: 3 })
+  @IsString()
+  @MinLength(3)
+  address!: string;
+
+  @ApiProperty({ minLength: 3 })
+  @IsString()
+  @MinLength(3)
+  password!: string;
+
+  @ApiProperty({ minLength: 3 })
+  @IsString()
+  @MinLength(3)
+  confirmPassword!: string;
+
+  @ApiProperty({ minLength: 3, maxLength: 100 })
+  @IsString()
+  @MinLength(3)
+  @MaxLength(100)
+  faculty: string;
+
+  @ApiProperty({ required: true })
+  @IsString()
+  @MinLength(3)
+  @MaxLength(100)
+  education: string;
 }

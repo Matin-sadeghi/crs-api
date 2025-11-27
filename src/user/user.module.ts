@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserDocument, UserSchema } from './database/schema/user.schema';
 import { UserRepository } from './database/repository/user.repository';
 import { UserStudentService } from './services/user-student.service';
+import { UserProfessorService } from './services/user-professor.service';
 
 const repositories: Provider[] = [
   { provide: 'USER_REPOSITORY', useClass: UserRepository },
@@ -17,7 +18,17 @@ const repositories: Provider[] = [
     ]),
   ],
   controllers: [UserController],
-  providers: [UserService, UserStudentService, ...repositories],
-  exports: [UserService, UserStudentService, ...repositories],
+  providers: [
+    UserService,
+    UserStudentService,
+    UserProfessorService,
+    ...repositories,
+  ],
+  exports: [
+    UserService,
+    UserStudentService,
+    UserProfessorService,
+    ...repositories,
+  ],
 })
 export class UserModule {}

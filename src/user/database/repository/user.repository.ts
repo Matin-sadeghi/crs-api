@@ -6,6 +6,7 @@ import { UserDocument } from '../schema/user.schema';
 import { CreateStudentUserDto } from 'src/user/dtos/user-student.dto';
 import { UserRole } from 'src/utils/enum';
 import { CreateAdminDto } from 'src/user/dtos/user-admin.dto';
+import { CreateProfessorUserDto } from 'src/user/dtos/user-professor.dto';
 
 @Injectable()
 export class UserRepository implements UserRepositoryPort {
@@ -35,6 +36,13 @@ export class UserRepository implements UserRepositoryPort {
       ...item,
       _id: new Types.ObjectId(),
       role: UserRole.STUDENT,
+    });
+  }
+  createProfessor(item: CreateProfessorUserDto): Promise<UserDocument> {
+    return this._repository.create({
+      ...item,
+      _id: new Types.ObjectId(),
+      role: UserRole.PROFESSOR,
     });
   }
 

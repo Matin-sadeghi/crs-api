@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { LessonModule } from './lesson/lesson.module';
 import { SeedModule } from './seed/seed.module';
 import { StudentModule } from './student/student.module';
+import { ProfessorModule } from './professor/professor.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { StudentModule } from './student/student.module';
     LessonModule,
     SeedModule,
     StudentModule,
+    ProfessorModule,
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRootAsync({
       inject: [ConfigService],
@@ -22,7 +24,6 @@ import { StudentModule } from './student/student.module';
         uri: config.getOrThrow<string>('MONGO_URI_CONN'),
       }),
     }),
-    ProfessorModule,
   ],
   controllers: [],
   providers: [],
