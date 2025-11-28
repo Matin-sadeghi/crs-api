@@ -8,6 +8,7 @@ import { LessonModule } from './lesson/lesson.module';
 import { SeedModule } from './seed/seed.module';
 import { StudentModule } from './student/student.module';
 import { ProfessorModule } from './professor/professor.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ProfessorModule } from './professor/professor.module';
         uri: config.getOrThrow<string>('MONGO_URI_CONN'),
       }),
     }),
+    AdminModule,
   ],
   controllers: [],
   providers: [],
