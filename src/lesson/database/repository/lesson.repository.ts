@@ -21,28 +21,39 @@ export class LessonRepository implements LessonRepositoryPort {
   getAll(): Promise<LessonDocument[]> {
     return this._repository.find().exec();
   }
+
   create(
     createLessonDto: CreateLessonDto,
     adminUserId: string,
   ): Promise<LessonDocument> {
     return this._repository.create({
-      ...createLessonDto,
+      ...createLessonDto, 
       createdBy: new Types.ObjectId(adminUserId),
       _id: new Types.ObjectId(),
     });
   }
+
   delete(id: string): Promise<LessonDocument | null> {
     return this._repository.findByIdAndDelete(new Types.ObjectId(id)).exec();
   }
+
   getOne(id: string): Promise<LessonDocument | null> {
     return this._repository.findById(new Types.ObjectId(id)).exec();
   }
+
   update(
     id: string,
     updateLessonDto: UpdateLessonDto,
   ): Promise<LessonDocument | null> {
     return this._repository
-      .findByIdAndUpdate(new Types.ObjectId(id), updateLessonDto)
+      .findByIdAndUpdate(
+        new Types.ObjectId(id),
+        {
+          ...updateLessonDto,
+          updatedAt: new Date(),
+        },
+        { new: true },
+      )
       .exec();
   }
 }

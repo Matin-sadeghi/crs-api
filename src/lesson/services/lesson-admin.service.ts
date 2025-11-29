@@ -15,9 +15,11 @@ export class LessonAdminService {
     @Inject('LESSON_REPOSITORY')
     private readonly lessonRepository: LessonRepositoryPort,
   ) {}
+
   getAllLessons(): Promise<LessonDocument[]> {
     return this.lessonRepository.getAll();
   }
+
   async getOneLesson(id: string): Promise<LessonDocument> {
     const lesson = await this.lessonRepository.getOne(id);
     if (!lesson) {
@@ -25,6 +27,7 @@ export class LessonAdminService {
     }
     return lesson;
   }
+
   async createLesson(
     createLessonDto: CreateLessonDto,
     adminUserId: string,
@@ -40,6 +43,7 @@ export class LessonAdminService {
       data: newLesson,
     };
   }
+
   async deleteLesson(id: string): Promise<HttpResponseDto> {
     const deletedLesson = await this.lessonRepository.delete(id);
     if (!deletedLesson) throw new NotFoundException('Lesson not found');
@@ -50,6 +54,7 @@ export class LessonAdminService {
       data: deletedLesson,
     };
   }
+
   async updateLesson(
     id: string,
     updateLessonDto: UpdateLessonDto,
@@ -58,7 +63,9 @@ export class LessonAdminService {
       id,
       updateLessonDto,
     );
-    if (!UpdateLessonDto) throw new NotFoundException('Lesson not found');
+
+    if (!updatedLesson) throw new NotFoundException('Lesson not found');
+
     return {
       status: HttpStatus.OK,
       message: 'Lesson updated successfully',
