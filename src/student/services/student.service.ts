@@ -9,6 +9,7 @@ import { UserStudentService } from 'src/user/services/user-student.service';
 import { HttpResponseDto } from '../../utils/util.dto';
 import { CreateStudentDto } from '../dtos/student.dto';
 import type { StudentRepositoryPort } from '../interface/student.repository.port';
+import { studentIdGenerator } from 'src/utils/id-generator';
 
 @Injectable()
 export class StudentService {
@@ -21,7 +22,8 @@ export class StudentService {
   async createUser(
     createStudentDto: CreateStudentDto,
   ): Promise<HttpResponseDto> {
-    const studentId = '4020250001'; // TODO: create a function to generate studentId
+    const lastStudent = await this.studentRepository.findLast();
+    const studentId = studentIdGenerator('7777', lastStudent?.studentId);
     const student = new Types.ObjectId();
     const { data } = await this.userStudentService.createStudentUser({
       ...createStudentDto,

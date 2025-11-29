@@ -14,6 +14,6 @@ export class AdminController {
     type: HttpResponseDto,
   })
   create(@Body() createAdminDto: CreateAdminDto): Promise<HttpResponseDto> {
-    return this.adminService.createUser(createAdminDto);
+    return this.adminService.createAdmin(createAdminDto);
   }
 }

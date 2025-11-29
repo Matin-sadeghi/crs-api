@@ -34,4 +34,7 @@ export class StudentRepository implements StudentRepositoryPort {
   async findById(id: string): Promise<StudentDocument | null> {
     return this._repository.findById(id).exec();
   }
+  async findLast(): Promise<StudentDocument | null> {
+    return this._repository.findOne().sort({ createdAt: -1 }).exec();
+  }
 }

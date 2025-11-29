@@ -11,4 +11,5 @@ export interface AdminRepositoryPort {
     createAdminData: CreateAdminData,
     _id: Types.ObjectId,
   ): Promise<AdminDocument>;
+  findLast(): Promise<AdminDocument | null>;
 }

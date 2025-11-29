@@ -13,4 +13,5 @@ export interface ProfessorRepositoryPort {
     createProfessorData: CreateProfessorData,
     _id: Types.ObjectId,
   ): Promise<ProfessorDocument>;
+  findLast(): Promise<ProfessorDocument | null>;
 }
