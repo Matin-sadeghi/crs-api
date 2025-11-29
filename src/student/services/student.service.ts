@@ -7,14 +7,14 @@ import {
 import { Types } from 'mongoose';
 import { UserStudentService } from 'src/user/services/user-student.service';
 import { HttpResponseDto } from '../../utils/util.dto';
-import { StudentRepository } from '../database/repository/student.repository';
 import { CreateStudentDto } from '../dtos/student.dto';
+import type { StudentRepositoryPort } from '../interface/student.repository.port';
 
 @Injectable()
 export class StudentService {
   constructor(
     @Inject('STUDENT_REPOSITORY')
-    private readonly studentRepository: StudentRepository,
+    private readonly studentRepository: StudentRepositoryPort,
     private readonly userStudentService: UserStudentService,
   ) {}
 

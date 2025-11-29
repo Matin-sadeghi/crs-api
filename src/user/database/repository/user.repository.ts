@@ -20,7 +20,7 @@ export class UserRepository implements UserRepositoryPort {
     return this._repository.find().exec();
   }
 
-  createAdmin(item: CreateAdminDto): Promise<UserDocument> {
+  createAdmin(item: Partial<CreateAdminDto>): Promise<UserDocument> {
     return this._repository.create({
       ...item,
       _id: new Types.ObjectId(),

@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsString, MaxLength, MinLength } from 'class-validator';
-import { UserGender } from '../../utils/enum';
-import { Types } from 'mongoose';
+import { IsEnum, IsString, MinLength, MaxLength } from 'class-validator';
+import { UserGender } from 'src/utils/enum';
 
 export class CreateAdminDto {
   @ApiProperty({ minLength: 3 })
@@ -12,21 +11,11 @@ export class CreateAdminDto {
   @ApiProperty({ minLength: 3 })
   @IsString()
   @MinLength(3)
-  username!: string;
-
-  @ApiProperty({ minLength: 3 })
-  @IsString()
-  @MinLength(3)
   lastName!: string;
 
   @ApiProperty({ enum: UserGender })
   @IsEnum(UserGender)
   gender!: UserGender;
-
-  @ApiProperty({ minLength: 3 })
-  @IsString()
-  @MinLength(3)
-  admin: Types.ObjectId;
 
   @ApiProperty({ minLength: 10, maxLength: 20 })
   @IsString()
@@ -49,6 +38,7 @@ export class CreateAdminDto {
   @IsString()
   @MinLength(3)
   password!: string;
+
   @ApiProperty({ minLength: 3 })
   @IsString()
   @MinLength(3)

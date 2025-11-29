@@ -1,11 +1,12 @@
 import { Module, Provider } from '@nestjs/common';
 import { UserController } from './controllers/user.controller';
 import { UserService } from './services/user.service';
+import { UserStudentService } from './services/user-student.service';
+import { UserProfessorService } from './services/user-professor.service';
+import { UserAdminService } from './services/user-admin.service'; // <-- import UserAdminService
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserDocument, UserSchema } from './database/schema/user.schema';
 import { UserRepository } from './database/repository/user.repository';
-import { UserStudentService } from './services/user-student.service';
-import { UserProfessorService } from './services/user-professor.service';
 
 const repositories: Provider[] = [
   { provide: 'USER_REPOSITORY', useClass: UserRepository },
@@ -22,12 +23,14 @@ const repositories: Provider[] = [
     UserService,
     UserStudentService,
     UserProfessorService,
+    UserAdminService,
     ...repositories,
   ],
   exports: [
     UserService,
     UserStudentService,
     UserProfessorService,
+    UserAdminService,
     ...repositories,
   ],
 })
