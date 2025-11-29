@@ -9,6 +9,7 @@ import { UserAdminService } from 'src/user/services/user-admin.service';
 import { HttpResponseDto } from '../../utils/util.dto';
 import { CreateAdminDto } from '../dtos/admin.dto';
 import type { AdminRepositoryPort } from '../interface/admin.repository.port';
+import { adminIdGenerator } from 'src/utils/id-generator';
 
 @Injectable()
 export class AdminService {
@@ -18,8 +19,9 @@ export class AdminService {
     private readonly userAdminService: UserAdminService,
   ) {}
 
-  async createUser(createAdminDto: CreateAdminDto): Promise<HttpResponseDto> {
-    const adminId = '4010250001'; // TODO: generate admin ID dynamically
+  async createAdmin(createAdminDto: CreateAdminDto): Promise<HttpResponseDto> {
+    const lastAdmin = await this.adminRepository.findLast();
+    const adminId = adminIdGenerator(lastAdmin?.adminId);
     const admin = new Types.ObjectId();
 
     const { data } = await this.userAdminService.createAdminUser({

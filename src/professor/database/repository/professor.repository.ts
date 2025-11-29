@@ -26,4 +26,8 @@ export class ProfessorRepository implements ProfessorRepositoryPort {
       _id,
     });
   }
+
+  async findLast(): Promise<ProfessorDocument | null> {
+    return this._repository.findOne().sort({ createdAt: -1 }).exec();
+  }
 }

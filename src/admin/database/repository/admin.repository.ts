@@ -24,4 +24,8 @@ export class AdminRepository implements AdminRepositoryPort {
       _id,
     });
   }
+
+  async findLast(): Promise<AdminDocument | null> {
+    return this._repository.findOne().sort({ createdAt: -1 }).exec();
+  }
 }
