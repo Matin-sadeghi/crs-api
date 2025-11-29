@@ -5,28 +5,27 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Types } from 'mongoose';
+import { UserAdminService } from 'src/user/services/user-admin.service';
 import { HttpResponseDto } from '../../utils/util.dto';
 import { CreateAdminDto } from '../dtos/admin.dto';
-import { AdminRepository } from '../database/repository/admin.repository';
-import { UserAdminService } from 'src/user/services/user-admin.service';
-import { UserRole } from 'src/utils/enum'; // import UserRole
+import type { AdminRepositoryPort } from '../interface/admin.repository.port';
 
 @Injectable()
 export class AdminService {
   constructor(
     @Inject('ADMIN_REPOSITORY')
-    private readonly adminRepository: AdminRepository,
+    private readonly adminRepository: AdminRepositoryPort,
     private readonly userAdminService: UserAdminService,
   ) {}
 
-  async createUser(dto: CreateAdminDto): Promise<HttpResponseDto> {
+  async createUser(createAdminDto: CreateAdminDto): Promise<HttpResponseDto> {
     const adminId = '4010250001'; // TODO: generate admin ID dynamically
     const admin = new Types.ObjectId();
 
     const { data } = await this.userAdminService.createAdminUser({
-      ...dto,
-      username: adminId,
-      role: UserRole.ADMIN, // add the required role
+      ...createAdminDto,
+      admin,
+      username: createAdminDto.firstName,
     });
 
     if (!data?._id) {

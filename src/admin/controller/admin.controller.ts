@@ -13,7 +13,7 @@ export class AdminController {
   @ApiResponse({
     type: HttpResponseDto,
   })
-  create(@Body() dto: CreateAdminDto): Promise<HttpResponseDto> {
-    return this.adminService.createUser(dto);
+  create(@Body() createAdminDto: CreateAdminDto): Promise<HttpResponseDto> {
+    return this.adminService.createUser(createAdminDto);
   }
 }

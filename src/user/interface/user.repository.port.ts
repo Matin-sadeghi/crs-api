@@ -7,7 +7,7 @@ export interface UserRepositoryPort {
   getAll(): Promise<UserDocument[]>;
   createStudent(item: CreateStudentUserDto): Promise<UserDocument>;
   createProfessor(item: CreateProfessorUserDto): Promise<UserDocument>;
-  createAdmin(item: CreateAdminDto): Promise<UserDocument>;
+  createAdmin(item: Partial<CreateAdminDto>): Promise<UserDocument>;
   getAllAdmins(): Promise<UserDocument[]>;
   findByUsername(studentId: string): Promise<UserDocument | null>;
   findByUserId(userId: string): Promise<UserDocument | null>;

@@ -4,16 +4,16 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { LessonRepository } from '../database/repository/lesson.repository';
+import { HttpResponseDto } from 'src/utils/util.dto';
 import { LessonDocument } from '../database/schema/lesson.schema';
 import { CreateLessonDto, UpdateLessonDto } from '../dtos/lesson-admin.dto';
-import { HttpResponseDto } from 'src/utils/util.dto';
+import type { LessonRepositoryPort } from '../interface/lesson.repository.port';
 
 @Injectable()
 export class LessonAdminService {
   constructor(
     @Inject('LESSON_REPOSITORY')
-    private readonly lessonRepository: LessonRepository,
+    private readonly lessonRepository: LessonRepositoryPort,
   ) {}
   getAllLessons(): Promise<LessonDocument[]> {
     return this.lessonRepository.getAll();

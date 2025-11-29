@@ -55,6 +55,9 @@ export class UserDocument {
 
   @Prop({ type: Types.ObjectId, ref: 'ProfessorDocument', required: false })
   professor: Types.ObjectId;
+
+  @Prop({ type: Types.ObjectId, ref: 'AdminDocument', required: false })
+  admin: Types.ObjectId;
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserDocument);

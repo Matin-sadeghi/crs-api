@@ -7,7 +7,7 @@ import {
 import { hashPassword } from 'src/utils/password';
 import { HttpResponseDto } from 'src/utils/util.dto';
 import { UserDocument } from '../database/schema/user.schema';
-import { CreateAdminDto } from '../dtos/user-admin.dto';  // fixed here
+import { CreateAdminDto } from '../dtos/user-admin.dto'; // fixed here
 import type { UserRepositoryPort } from '../interface/user.repository.port';
 
 @Injectable()
@@ -18,20 +18,18 @@ export class UserAdminService {
   ) {}
 
   async createAdminUser(
-    createUserDto: CreateAdminDto,  // fixed here
+    createUserDto: CreateAdminDto, // fixed here
   ): Promise<HttpResponseDto<UserDocument>> {
-    const dto = createUserDto as any;
-
-    if (dto.password !== dto.confirmPassword) {
+    if (createUserDto.password !== createUserDto.confirmPassword) {
       throw new BadRequestException(
         'Password and confirm password do not match',
       );
     }
 
-    const hashedPassword = await hashPassword(dto.password);
+    const hashedPassword = await hashPassword(createUserDto.password);
 
     const user = await this.userRepository.createAdmin({
-      ...dto,
+      ...createUserDto,
       password: hashedPassword,
     });
 

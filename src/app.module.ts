@@ -1,14 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-
-import { UserModule } from './user/user.module';
+import { AdminModule } from './admin/admin.module';
 import { AuthModule } from './auth/auth.module';
 import { LessonModule } from './lesson/lesson.module';
+import { ProfessorModule } from './professor/professor.module';
 import { SeedModule } from './seed/seed.module';
 import { StudentModule } from './student/student.module';
-import { ProfessorModule } from './professor/professor.module';
-import { AdminModule } from './admin/admin.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -18,6 +17,7 @@ import { AdminModule } from './admin/admin.module';
     SeedModule,
     StudentModule,
     ProfessorModule,
+    AdminModule,
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRootAsync({
       inject: [ConfigService],
@@ -25,7 +25,6 @@ import { AdminModule } from './admin/admin.module';
         uri: config.getOrThrow<string>('MONGO_URI_CONN'),
       }),
     }),
-    AdminModule,
   ],
   controllers: [],
   providers: [],
