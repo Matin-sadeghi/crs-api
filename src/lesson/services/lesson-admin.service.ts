@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   HttpStatus,
   Inject,
   Injectable,
@@ -32,6 +33,10 @@ export class LessonAdminService {
     createLessonDto: CreateLessonDto,
     adminUserId: string,
   ): Promise<HttpResponseDto> {
+    const lesson = await this.lessonRepository.getOneByLessonId(
+      createLessonDto.lessonId,
+    );
+    if (lesson) throw new BadRequestException('Lesson already exists');
     const newLesson = await this.lessonRepository.create(
       createLessonDto,
       adminUserId,
@@ -59,12 +64,30 @@ export class LessonAdminService {
     id: string,
     updateLessonDto: UpdateLessonDto,
   ): Promise<HttpResponseDto> {
+    const existingLesson = await this.lessonRepository.getOne(id);
+    if (!existingLesson) {
+      throw new NotFoundException('Lesson not found');
+    }
+
+    if (
+      updateLessonDto.lessonId &&
+      updateLessonDto.lessonId !== existingLesson.lessonId
+    ) {
+      const lessonWithSameId = await this.lessonRepository.getOneByLessonId(
+        updateLessonDto.lessonId,
+      );
+      if (lessonWithSameId) {
+        throw new BadRequestException('Lesson ID already exists');
+      }
+    }
+
     const updatedLesson = await this.lessonRepository.update(
       id,
       updateLessonDto,
     );
-
-    if (!updatedLesson) throw new NotFoundException('Lesson not found');
+    if (!updatedLesson) {
+      throw new NotFoundException('Lesson not found');
+    }
 
     return {
       status: HttpStatus.OK,

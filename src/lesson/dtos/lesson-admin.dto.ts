@@ -1,6 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString, MinLength, IsOptional } from 'class-validator';
-
+import {
+  IsNumber,
+  IsString,
+  MinLength,
+  IsOptional,
+  IsEnum,
+  Min,
+  Max,
+} from 'class-validator';
+import { LessonType } from 'src/utils/enum';
 
 export class CreateLessonDto {
   @ApiProperty({ example: '4010250001', description: 'Custom lesson ID' })
@@ -12,16 +20,17 @@ export class CreateLessonDto {
   @MinLength(3)
   title!: string;
 
-  @ApiProperty({ type: Number })
+  @ApiProperty({ type: Number, minimum: 1, maximum: 6 })
   @IsNumber()
+  @Min(1)
+  @Max(6)
   unit!: number;
 
   @ApiProperty({
-    example: 'Mandatory',
-    description: 'Lesson type',
+    enum: LessonType,
   })
-  @IsString()
-  type!: string;
+  @IsEnum(LessonType)
+  type!: LessonType;
 
   @ApiProperty({
     example: 'Computer Engineering',
@@ -30,7 +39,6 @@ export class CreateLessonDto {
   @IsString()
   field!: string;
 }
-
 
 export class UpdateLessonDto {
   @ApiProperty({ example: '4010250001', required: false })
@@ -44,18 +52,18 @@ export class UpdateLessonDto {
   @MinLength(3)
   title?: string;
 
-  @ApiProperty({ type: Number, required: false })
+  @ApiProperty({ type: Number, required: false, minimum: 1, maximum: 6 })
   @IsNumber()
   @IsOptional()
+  @Min(1)
+  @Max(6)
   unit?: number;
 
   @ApiProperty({
-    example: 'Mandatory',
-    required: false,
+    enum: LessonType,
   })
-  @IsString()
-  @IsOptional()
-  type?: string;
+  @IsEnum(LessonType)
+  type!: LessonType;
 
   @ApiProperty({
     example: 'Computer Engineering',
@@ -65,7 +73,6 @@ export class UpdateLessonDto {
   @IsOptional()
   field?: string;
 }
-
 
 export class LessonResponseDto {
   @ApiProperty({ type: String })
@@ -95,7 +102,6 @@ export class LessonResponseDto {
   @ApiProperty({ required: false })
   updatedAt?: Date;
 }
-
 
 export class LessonWithUserResponseDto {
   @ApiProperty({ type: String })

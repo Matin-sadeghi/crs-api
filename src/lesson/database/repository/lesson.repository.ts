@@ -18,6 +18,10 @@ export class LessonRepository implements LessonRepositoryPort {
     this._repository = repository;
   }
 
+  getOneByLessonId(lessonId: string): Promise<LessonDocument | null> {
+    return this._repository.findOne({ lessonId }).exec();
+  }
+
   getAll(): Promise<LessonDocument[]> {
     return this._repository.find().exec();
   }
@@ -27,7 +31,7 @@ export class LessonRepository implements LessonRepositoryPort {
     adminUserId: string,
   ): Promise<LessonDocument> {
     return this._repository.create({
-      ...createLessonDto, 
+      ...createLessonDto,
       createdBy: new Types.ObjectId(adminUserId),
       _id: new Types.ObjectId(),
     });

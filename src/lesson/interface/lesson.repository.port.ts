@@ -12,6 +12,7 @@ export interface LessonRepositoryPort {
   delete(id: string): Promise<LessonDocument | null>;
 
   getOne(id: string): Promise<LessonDocument | null>;
+  getOneByLessonId(lessonId: string): Promise<LessonDocument | null>;
 
   update(
     id: string,
