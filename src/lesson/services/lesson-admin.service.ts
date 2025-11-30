@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   HttpStatus,
   Inject,
   Injectable,
@@ -15,9 +16,11 @@ export class LessonAdminService {
     @Inject('LESSON_REPOSITORY')
     private readonly lessonRepository: LessonRepositoryPort,
   ) {}
+
   getAllLessons(): Promise<LessonDocument[]> {
     return this.lessonRepository.getAll();
   }
+
   async getOneLesson(id: string): Promise<LessonDocument> {
     const lesson = await this.lessonRepository.getOne(id);
     if (!lesson) {
@@ -25,10 +28,15 @@ export class LessonAdminService {
     }
     return lesson;
   }
+
   async createLesson(
     createLessonDto: CreateLessonDto,
     adminUserId: string,
   ): Promise<HttpResponseDto> {
+    const lesson = await this.lessonRepository.getOneByLessonId(
+      createLessonDto.lessonId,
+    );
+    if (lesson) throw new BadRequestException('Lesson already exists');
     const newLesson = await this.lessonRepository.create(
       createLessonDto,
       adminUserId,
@@ -40,6 +48,7 @@ export class LessonAdminService {
       data: newLesson,
     };
   }
+
   async deleteLesson(id: string): Promise<HttpResponseDto> {
     const deletedLesson = await this.lessonRepository.delete(id);
     if (!deletedLesson) throw new NotFoundException('Lesson not found');
@@ -50,15 +59,36 @@ export class LessonAdminService {
       data: deletedLesson,
     };
   }
+
   async updateLesson(
     id: string,
     updateLessonDto: UpdateLessonDto,
   ): Promise<HttpResponseDto> {
+    const existingLesson = await this.lessonRepository.getOne(id);
+    if (!existingLesson) {
+      throw new NotFoundException('Lesson not found');
+    }
+
+    if (
+      updateLessonDto.lessonId &&
+      updateLessonDto.lessonId !== existingLesson.lessonId
+    ) {
+      const lessonWithSameId = await this.lessonRepository.getOneByLessonId(
+        updateLessonDto.lessonId,
+      );
+      if (lessonWithSameId) {
+        throw new BadRequestException('Lesson ID already exists');
+      }
+    }
+
     const updatedLesson = await this.lessonRepository.update(
       id,
       updateLessonDto,
     );
-    if (!UpdateLessonDto) throw new NotFoundException('Lesson not found');
+    if (!updatedLesson) {
+      throw new NotFoundException('Lesson not found');
+    }
+
     return {
       status: HttpStatus.OK,
       message: 'Lesson updated successfully',

@@ -4,6 +4,7 @@ import { LessonAdminController } from './controller/lesson-admin.controller';
 import { LessonRepository } from './database/repository/lesson.repository';
 import { LessonDocument, LessonSchema } from './database/schema/lesson.schema';
 import { LessonAdminService } from './services/lesson-admin.service';
+
 const repositories: Provider[] = [
   { provide: 'LESSON_REPOSITORY', useClass: LessonRepository },
 ];
@@ -16,6 +17,6 @@ const repositories: Provider[] = [
   ],
   controllers: [LessonAdminController],
   providers: [...repositories, LessonAdminService],
-  exports: [],
+  exports: [...repositories, LessonAdminService],
 })
 export class LessonModule {}
