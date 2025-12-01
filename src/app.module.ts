@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AdminModule } from './admin/admin.module';
 import { AuthModule } from './auth/auth.module';
+import { FacultyModule } from './faculty/faculty.module';
 import { LessonModule } from './lesson/lesson.module';
 import { ProfessorModule } from './professor/professor.module';
 import { SeedModule } from './seed/seed.module';
@@ -18,6 +19,7 @@ import { UserModule } from './user/user.module';
     StudentModule,
     ProfessorModule,
     AdminModule,
+    FacultyModule,
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRootAsync({
       inject: [ConfigService],
