@@ -28,6 +28,17 @@ export const professorIdGenerator = (
   return `${currentYear}${majorCode}${lastProfessorIdNumber + 1}`;
 };
 
+export const facultyIdGenerator = (
+  majorCode: string,
+  lastFacultyId?: string,
+): string => {
+  const lastFacultyIdNumber = lastFacultyId
+    ? parseInt(lastFacultyId.slice(-4))
+    : 0;
+  const currentYear: number = moment().year();
+  return `${currentYear}${majorCode}${lastFacultyIdNumber + 1}`;
+};
+
 export const randomNumberStringGenerator = (length: number): string => {
   const digits = '0123456789';
   let result = '';
