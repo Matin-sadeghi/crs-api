@@ -11,10 +11,7 @@ export class FacultyDocument {
   @Prop({ type: Types.ObjectId })
   _id: Types.ObjectId;
 
-  @Prop({ unique: true })
-  facultyId: string;
-
-  @Prop({ minLength: 3, maxLength: 100 })
+  @Prop({ minLength: 3, maxLength: 100, unique: true })
   name: string;
 
   @Prop({ default: Date.now })
