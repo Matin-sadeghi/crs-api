@@ -13,6 +13,7 @@ export interface LessonRepositoryPort {
 
   getOne(id: string): Promise<LessonDocument | null>;
   getOneByLessonId(lessonId: string): Promise<LessonDocument | null>;
+  getLessonsById(ids: string[]): Promise<LessonDocument[]>;
 
   update(
     id: string,

@@ -7,6 +7,7 @@ import {
   IsEnum,
   Min,
   Max,
+  IsArray,
 } from 'class-validator';
 import { LessonType } from 'src/utils/enum';
 
@@ -19,6 +20,11 @@ export class CreateLessonDto {
   @IsString()
   @MinLength(3)
   title!: string;
+
+  @ApiProperty({ type: [String], required: false })
+  @IsOptional()
+  @IsArray()
+  prerequisite?: string[];
 
   @ApiProperty({ type: Number, minimum: 1, maximum: 6 })
   @IsNumber()
@@ -59,6 +65,11 @@ export class UpdateLessonDto {
   @Max(6)
   unit?: number;
 
+  @ApiProperty({ type: [String], required: false })
+  @IsOptional()
+  @IsArray()
+  prerequisite?: string[];
+
   @ApiProperty({
     enum: LessonType,
   })
@@ -72,6 +83,29 @@ export class UpdateLessonDto {
   @IsString()
   @IsOptional()
   field?: string;
+}
+
+export class PrerequisiteLessonDto {
+  @ApiProperty({ type: String })
+  _id!: string;
+
+  @ApiProperty()
+  lessonId!: string;
+
+  @ApiProperty()
+  title!: string;
+
+  @ApiProperty()
+  unit!: number;
+
+  @ApiProperty()
+  type!: string;
+
+  @ApiProperty()
+  field!: string;
+
+  @ApiProperty()
+  createdAt!: Date;
 }
 
 export class LessonResponseDto {
@@ -89,6 +123,13 @@ export class LessonResponseDto {
 
   @ApiProperty()
   type!: string;
+
+  @ApiProperty({
+    type: [PrerequisiteLessonDto],
+    required: false,
+    description: 'Array of prerequisite lesson objects (populated)',
+  })
+  prerequisite?: PrerequisiteLessonDto[];
 
   @ApiProperty()
   field!: string;
@@ -118,6 +159,13 @@ export class LessonWithUserResponseDto {
 
   @ApiProperty()
   type!: string;
+
+  @ApiProperty({
+    type: [PrerequisiteLessonDto],
+    required: false,
+    description: 'Array of prerequisite lesson objects (populated)',
+  })
+  prerequisite?: PrerequisiteLessonDto[];
 
   @ApiProperty()
   field!: string;

@@ -18,20 +18,38 @@ export class LessonRepository implements LessonRepositoryPort {
     this._repository = repository;
   }
 
+  async getLessonsById(ids: string[]): Promise<LessonDocument[]> {
+    const lessons = await this._repository
+      .find({ _id: { $in: ids.map((id) => new Types.ObjectId(id)) } })
+      .exec();
+    return lessons;
+  }
+
   getOneByLessonId(lessonId: string): Promise<LessonDocument | null> {
     return this._repository.findOne({ lessonId }).exec();
   }
 
   getAll(): Promise<LessonDocument[]> {
-    return this._repository.find().exec();
+    return this._repository
+      .find()
+      .populate({
+        path: 'prerequisite',
+        model: LessonDocument.name,
+      })
+      .exec();
   }
 
   create(
     createLessonDto: CreateLessonDto,
     adminUserId: string,
   ): Promise<LessonDocument> {
+    const prerequisiteObjectIds = createLessonDto.prerequisite
+      ? createLessonDto.prerequisite.map((id) => new Types.ObjectId(id))
+      : undefined;
+
     return this._repository.create({
       ...createLessonDto,
+      prerequisite: prerequisiteObjectIds,
       createdBy: new Types.ObjectId(adminUserId),
       _id: new Types.ObjectId(),
     });
@@ -42,22 +60,34 @@ export class LessonRepository implements LessonRepositoryPort {
   }
 
   getOne(id: string): Promise<LessonDocument | null> {
-    return this._repository.findById(new Types.ObjectId(id)).exec();
+    return this._repository
+      .findById(new Types.ObjectId(id))
+      .populate({
+        path: 'prerequisite',
+        model: LessonDocument.name,
+      })
+      .exec();
   }
 
   update(
     id: string,
     updateLessonDto: UpdateLessonDto,
   ): Promise<LessonDocument | null> {
+    const { prerequisite, ...rest } = updateLessonDto;
+    const updateData = {
+      ...rest,
+      updatedAt: new Date(),
+      ...(prerequisite && {
+        prerequisite: prerequisite.map((id) => new Types.ObjectId(id)),
+      }),
+    };
+
     return this._repository
-      .findByIdAndUpdate(
-        new Types.ObjectId(id),
-        {
-          ...updateLessonDto,
-          updatedAt: new Date(),
-        },
-        { new: true },
-      )
+      .findByIdAndUpdate(new Types.ObjectId(id), updateData, { new: true })
+      .populate({
+        path: 'prerequisite',
+        model: LessonDocument.name,
+      })
       .exec();
   }
 }
