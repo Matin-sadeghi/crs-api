@@ -17,8 +17,10 @@ export class LessonAdminService {
     private readonly lessonRepository: LessonRepositoryPort,
   ) {}
 
-  getAllLessons(): Promise<LessonDocument[]> {
-    return this.lessonRepository.getAll();
+  async getAllLessons(): Promise<LessonDocument[]> {
+    const lessons = await this.lessonRepository.getAll();
+    console.log(lessons);
+    return lessons;
   }
 
   async getOneLesson(id: string): Promise<LessonDocument> {
@@ -36,7 +38,17 @@ export class LessonAdminService {
     const lesson = await this.lessonRepository.getOneByLessonId(
       createLessonDto.lessonId,
     );
-    if (lesson) throw new BadRequestException('Lesson already exists');
+    if (lesson) throw new BadRequestException('Lesson ID already exists');
+
+    if (createLessonDto.prerequisite) {
+      const lessons = await this.lessonRepository.getLessonsById(
+        createLessonDto.prerequisite,
+      );
+      if (lessons.length !== createLessonDto.prerequisite.length) {
+        throw new BadRequestException('Prerequisite lessons not found');
+      }
+    }
+
     const newLesson = await this.lessonRepository.create(
       createLessonDto,
       adminUserId,
@@ -78,6 +90,15 @@ export class LessonAdminService {
       );
       if (lessonWithSameId) {
         throw new BadRequestException('Lesson ID already exists');
+      }
+    }
+
+    if (updateLessonDto.prerequisite) {
+      const lessons = await this.lessonRepository.getLessonsById(
+        updateLessonDto.prerequisite,
+      );
+      if (lessons.length !== updateLessonDto.prerequisite.length) {
+        throw new BadRequestException('Prerequisite lessons not found');
       }
     }
 

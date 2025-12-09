@@ -18,6 +18,15 @@ export class LessonDocument {
   @Prop({ minLength: 3, maxLength: 100 })
   title: string;
 
+  @Prop([
+    {
+      type: Types.ObjectId,
+      ref: 'LessonDocument',
+      required: false,
+    },
+  ])
+  prerequisite: Types.ObjectId[];
+
   @Prop({ type: Number, default: 1, min: 1, max: 6 })
   unit: number;
 
