@@ -97,6 +97,11 @@ export class LessonAdminService {
       const lessons = await this.lessonRepository.getLessonsById(
         updateLessonDto.prerequisite,
       );
+      if (updateLessonDto?.prerequisite?.includes(id)) {
+        throw new BadRequestException(
+          'Prerequisite lesson cannot be the same as the lesson itself',
+        );
+      }
       if (lessons.length !== updateLessonDto.prerequisite.length) {
         throw new BadRequestException('Prerequisite lessons not found');
       }
