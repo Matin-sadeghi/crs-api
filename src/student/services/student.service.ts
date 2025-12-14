@@ -31,7 +31,9 @@ export class StudentService {
     if (!major) {
       throw new BadRequestException('Major not found');
     }
-    const lastStudent = await this.studentRepository.findLast();
+    const lastStudent = await this.studentRepository.findLast(
+      major._id.toString(),
+    );
 
     const studentId = studentIdGenerator(major.code, lastStudent?.studentId);
     const student = new Types.ObjectId();
