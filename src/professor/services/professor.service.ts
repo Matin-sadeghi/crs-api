@@ -3,14 +3,16 @@ import {
   HttpStatus,
   Inject,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { Types } from 'mongoose';
+import { FacultyService } from 'src/faculty/services/faculty.service';
 import { UserProfessorService } from 'src/user/services/user-professor.service';
+import { professorIdGenerator } from 'src/utils/id-generator';
 import { HttpResponseDto } from '../../utils/util.dto';
+import { ProfessorDocument } from '../database/schema/professor.schema';
 import { CreateProfessorDto } from '../dtos/professor.dto';
 import type { ProfessorRepositoryPort } from '../interface/professor.repository.port';
-import { professorIdGenerator } from 'src/utils/id-generator';
-import { FacultyService } from 'src/faculty/services/faculty.service';
 
 @Injectable()
 export class ProfessorService {
@@ -58,5 +60,13 @@ export class ProfessorService {
       status: HttpStatus.CREATED,
       message: 'Professor created successfully',
     };
+  }
+
+  async getProfessorById(id: string): Promise<ProfessorDocument> {
+    const professor = await this.professorRepository.getProfessorById(id);
+    if (!professor) {
+      throw new NotFoundException('Professor not found');
+    }
+    return professor;
   }
 }

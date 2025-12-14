@@ -8,6 +8,7 @@ import { FacultyModule } from './faculty/faculty.module';
 import { LessonModule } from './lesson/lesson.module';
 import { MajorModule } from './major/major.module';
 import { ProfessorModule } from './professor/professor.module';
+import { SectionModule } from './section/section.module';
 import { SeedModule } from './seed/seed.module';
 import { StudentModule } from './student/student.module';
 import { UserModule } from './user/user.module';
@@ -24,6 +25,7 @@ import { UserModule } from './user/user.module';
     FacultyModule,
     MajorModule,
     ClassroomModule,
+    SectionModule,
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRootAsync({
       inject: [ConfigService],
