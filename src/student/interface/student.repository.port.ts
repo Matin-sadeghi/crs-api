@@ -3,7 +3,7 @@ import { Types } from 'mongoose';
 
 export interface CreateStudentData {
   studentId: string;
-  major: string;
+  major: Types.ObjectId;
   user: Types.ObjectId;
 }
 

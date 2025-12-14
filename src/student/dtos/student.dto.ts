@@ -46,5 +46,5 @@ export class CreateStudentDto {
 
   @ApiProperty({ required: false })
   @IsString()
-  major: string;
+  majorCode: string;
 }
