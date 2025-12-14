@@ -18,11 +18,12 @@ export class ProfessorRepository implements ProfessorRepositoryPort {
   }
 
   create(
-    createProfessorData: CreateProfessorData,
+    { faculty, ...createProfessorData }: CreateProfessorData,
     _id: Types.ObjectId,
   ): Promise<ProfessorDocument> {
     return this._repository.create({
       ...createProfessorData,
+      faculty: faculty ? new Types.ObjectId(faculty) : null,
       _id,
     });
   }

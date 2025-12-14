@@ -17,15 +17,12 @@ export const adminIdGenerator = (lastAdminId?: string): string => {
   return `${currentYear}000${lastAdminIdNumber + 1}`;
 };
 
-export const professorIdGenerator = (
-  majorCode: string,
-  lastProfessorId?: string,
-): string => {
+export const professorIdGenerator = (lastProfessorId?: string): string => {
   const lastProfessorIdNumber = lastProfessorId
     ? parseInt(lastProfessorId.slice(-4))
     : 0;
   const currentYear: number = moment().year();
-  return `${currentYear}${majorCode}${lastProfessorIdNumber + 1}`;
+  return `${currentYear}111${lastProfessorIdNumber + 1}`;
 };
 
 export const facultyIdGenerator = (

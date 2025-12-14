@@ -3,7 +3,7 @@ import { ProfessorDocument } from '../database/schema/professor.schema';
 
 export interface CreateProfessorData {
   professorId: string;
-  faculty: string;
+  faculty?: string;
   education: string;
   user: Types.ObjectId;
 }
