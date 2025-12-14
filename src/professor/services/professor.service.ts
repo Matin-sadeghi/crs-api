@@ -10,6 +10,7 @@ import { HttpResponseDto } from '../../utils/util.dto';
 import { CreateProfessorDto } from '../dtos/professor.dto';
 import type { ProfessorRepositoryPort } from '../interface/professor.repository.port';
 import { professorIdGenerator } from 'src/utils/id-generator';
+import { FacultyService } from 'src/faculty/services/faculty.service';
 
 @Injectable()
 export class ProfessorService {
@@ -17,13 +18,22 @@ export class ProfessorService {
     @Inject('PROFESSOR_REPOSITORY')
     private readonly professorRepository: ProfessorRepositoryPort,
     private readonly userProfessorService: UserProfessorService,
+    private readonly facultyService: FacultyService,
   ) {}
 
   async createUser(
     createProfessorDto: CreateProfessorDto,
   ): Promise<HttpResponseDto> {
+    if (createProfessorDto?.faculty) {
+      const faculty = await this.facultyService.getFacultyById(
+        createProfessorDto.faculty,
+      );
+      if (!faculty) {
+        throw new BadRequestException('Faculty not found');
+      }
+    }
     const lastProfessor = await this.professorRepository.findLast();
-    const professorId = professorIdGenerator('111', lastProfessor?.professorId);
+    const professorId = professorIdGenerator(lastProfessor?.professorId);
 
     const professor = new Types.ObjectId();
     const { data } = await this.userProfessorService.createProfessorUser({

@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsString, MaxLength, MinLength } from 'class-validator';
+import {
+  IsEnum,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import { UserGender } from 'src/utils/enum';
 
 export class CreateProfessorDto {
@@ -46,9 +52,8 @@ export class CreateProfessorDto {
 
   @ApiProperty({ minLength: 3, maxLength: 100 })
   @IsString()
-  @MinLength(3)
-  @MaxLength(100)
-  faculty: string;
+  @IsOptional()
+  faculty?: string;
 
   @ApiProperty({ required: true })
   @IsString()

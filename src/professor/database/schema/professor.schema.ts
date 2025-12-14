@@ -13,8 +13,8 @@ export class ProfessorDocument {
   @Prop({ unique: true })
   professorId: string;
 
-  @Prop({ minLength: 3, maxLength: 100 })
-  faculty: string;
+  @Prop({ type: Types.ObjectId, ref: 'FacultyDocument', required: false })
+  faculty?: Types.ObjectId;
 
   @Prop({ minLength: 3, maxLength: 100 })
   education: string;

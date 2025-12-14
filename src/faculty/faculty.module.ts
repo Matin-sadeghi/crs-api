@@ -25,6 +25,6 @@ const repositories: Provider[] = [
   ],
   controllers: [FacultyController],
   providers: [FacultyService, ...repositories],
-  exports: [],
+  exports: [FacultyService, ...repositories],
 })
 export class FacultyModule {}

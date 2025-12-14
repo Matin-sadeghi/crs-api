@@ -10,6 +10,7 @@ import {
   ProfessorSchema,
 } from './database/schema/professor.schema';
 import { UserModule } from 'src/user/user.module';
+import { FacultyModule } from 'src/faculty/faculty.module';
 
 const repositories: Provider[] = [
   { provide: 'PROFESSOR_REPOSITORY', useClass: ProfessorRepository },
@@ -17,6 +18,7 @@ const repositories: Provider[] = [
 
 @Module({
   imports: [
+    FacultyModule,
     MongooseModule.forFeature([
       {
         name: ProfessorDocument.name,

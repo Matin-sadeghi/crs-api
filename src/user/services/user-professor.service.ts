@@ -26,7 +26,6 @@ export class UserProfessorService {
       );
     }
     const hashedPassword = await hashPassword(createUserDto.password);
-    console.log(createUserDto);
     const user = await this.userRepository.createProfessor({
       ...createUserDto,
       password: hashedPassword,

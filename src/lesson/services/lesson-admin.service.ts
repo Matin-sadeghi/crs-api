@@ -19,7 +19,6 @@ export class LessonAdminService {
 
   async getAllLessons(): Promise<LessonDocument[]> {
     const lessons = await this.lessonRepository.getAll();
-    console.log(lessons);
     return lessons;
   }
 
