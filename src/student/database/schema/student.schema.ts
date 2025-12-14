@@ -14,8 +14,8 @@ export class StudentDocument {
   @Prop({ unique: true })
   studentId: string;
 
-  @Prop()
-  major: string;
+  @Prop({ type: Types.ObjectId, ref: 'MajorDocument', required: true })
+  major: Types.ObjectId;
 
   @Prop({ type: Types.ObjectId, ref: 'UserDocument', required: true })
   user: Types.ObjectId;

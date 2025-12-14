@@ -10,6 +10,7 @@ import {
   StudentDocument,
   StudentSchema,
 } from './database/schema/student.schema';
+import { MajorModule } from 'src/major/major.module';
 
 const repositories: Provider[] = [
   { provide: 'STUDENT_REPOSITORY', useClass: StudentRepository },
@@ -17,6 +18,7 @@ const repositories: Provider[] = [
 
 @Module({
   imports: [
+    MajorModule,
     MongooseModule.forFeature([
       {
         name: StudentDocument.name,

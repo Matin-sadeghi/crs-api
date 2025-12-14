@@ -29,6 +29,14 @@ export class MajorService {
     return major;
   }
 
+  async getOneMajorByCode(code: string): Promise<MajorDocument> {
+    const major = await this.majorRepository.getOneByCode(code);
+    if (!major) {
+      throw new NotFoundException('Major not found');
+    }
+    return major;
+  }
+
   async createMajor(createMajorDto: CreateMajorDto): Promise<HttpResponseDto> {
     const existingMajor = await this.majorRepository.getOneByCode(
       createMajorDto.code,
