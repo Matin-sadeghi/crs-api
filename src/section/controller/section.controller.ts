@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -41,6 +42,21 @@ export class SectionController {
   })
   getAllSections(): Promise<SectionDocument[]> {
     return this.sectionService.getAllSections();
+  }
+
+  @Get('search/student')
+  @Roles(UserRole.STUDENT)
+  @ApiOperation({
+    summary: 'Student search sections by professor name or lesson name',
+  })
+  @ApiResponse({
+    type: SectionResponseDto,
+    isArray: true,
+  })
+  searchSectionsForStudent(
+    @Query('search') search?: string,
+  ): Promise<SectionDocument[]> {
+    return this.sectionService.searchSectionsForStudent(search ?? '');
   }
 
   @Get(':id')

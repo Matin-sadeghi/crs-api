@@ -16,6 +16,10 @@ export interface SectionRepositoryPort {
     updateSectionDto: UpdateSectionDto,
   ): Promise<SectionDocument | null>;
 
+  searchByProfessorOrLesson(
+    search: string,
+  ): Promise<SectionDocument[]>;
+
   findConflictingSections(
     classroomId: string,
     schedules: Schedule[],

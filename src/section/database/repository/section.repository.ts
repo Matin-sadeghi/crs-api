@@ -122,6 +122,61 @@ export class SectionRepository implements SectionRepositoryPort {
       .exec();
   }
 
+  searchByProfessorOrLesson(
+    search: string,
+  ): Promise<SectionDocument[]> {
+    const regex = new RegExp(search, 'i');
+
+    return this._repository
+      .find()
+      .populate({
+        path: 'professor',
+        model: 'ProfessorDocument',
+        populate: {
+          path: 'user',
+          model: 'UserDocument',
+          match: {
+            $or: [
+              { firstName: regex },
+              { lastName: regex },
+            ],
+          },
+        },
+      })
+      .populate({
+        path: 'classroom',
+        model: 'ClassroomDocument',
+      })
+      .populate({
+        path: 'lesson',
+        model: 'LessonDocument',
+        match: {
+          title: regex,
+        },
+      })
+      .populate({
+        path: 'students',
+        model: 'StudentDocument',
+      })
+      .then((sections) =>
+        sections.filter(
+          (section) =>
+            // @ts-ignore - professor may be populated with user
+            (section.professor &&
+              // @ts-ignore
+              section.professor.user &&
+              // @ts-ignore
+              (regex.test(section.professor.user.firstName) ||
+                // @ts-ignore
+                regex.test(section.professor.user.lastName))) ||
+            (section.lesson && regex.test(
+              // @ts-ignore
+              section.lesson.title,
+            )),
+        ),
+      );
+  }
+
   findConflictingSections(
     classroomId: string,
     schedules: Schedule[],
