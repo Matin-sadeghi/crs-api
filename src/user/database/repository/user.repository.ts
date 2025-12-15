@@ -46,8 +46,13 @@ export class UserRepository implements UserRepositoryPort {
     });
   }
 
-  update(id: string, item: any) {
-    return this._repository.findByIdAndUpdate(id, item);
+  update(
+    id: string,
+    item: Partial<UserDocument>,
+  ): Promise<UserDocument | null> {
+    return this._repository
+      .findByIdAndUpdate(new Types.ObjectId(id), item, { new: true })
+      .exec();
   }
   updateTokens(id: string, accessToken: string, refreshToken: string) {
     return this._repository.findByIdAndUpdate(new Types.ObjectId(id), {

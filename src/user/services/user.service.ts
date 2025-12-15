@@ -57,4 +57,15 @@ export class UserService {
   ): Promise<void> {
     await this.userRepository.updateTokens(id, accessToken, refreshToken);
   }
+
+  async updateProfile(
+    userId: string,
+    payload: Partial<UserDocument>,
+  ): Promise<UserDocument> {
+    const updatedUser = await this.userRepository.update(userId, payload);
+    if (!updatedUser) {
+      throw new NotFoundException('User not found');
+    }
+    return updatedUser;
+  }
 }
