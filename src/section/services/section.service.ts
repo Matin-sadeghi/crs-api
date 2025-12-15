@@ -77,8 +77,8 @@ export class SectionService {
     return null;
   }
 
-  async getAllSections(): Promise<SectionDocument[]> {
-    const sections = await this.sectionRepository.getAll();
+  async getAllSections(search: string): Promise<SectionDocument[]> {
+    const sections = await this.sectionRepository.getAll(search);
     return sections;
   }
 

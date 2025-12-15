@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model, PipelineStage, Types } from 'mongoose';
 import { SectionRepositoryPort } from 'src/section/interface/section.repository.port';
 import { SectionDocument, Schedule } from '../schema/section.schema';
 import {
@@ -18,30 +18,92 @@ export class SectionRepository implements SectionRepositoryPort {
     this._repository = repository;
   }
 
-  getAll(): Promise<SectionDocument[]> {
-    return this._repository
-      .find()
-      .populate({
-        path: 'professor',
-        model: 'ProfessorDocument',
-        populate: {
-          path: 'user',
-          model: 'UserDocument',
+  async getAll(search: string): Promise<SectionDocument[]> {
+    const pipeline: PipelineStage[] = [
+      {
+        $lookup: {
+          from: 'professor',
+          localField: 'professor',
+          foreignField: '_id',
+          as: 'professor',
         },
-      })
-      .populate({
-        path: 'classroom',
-        model: 'ClassroomDocument',
-      })
-      .populate({
-        path: 'lesson',
-        model: 'LessonDocument',
-      })
-      .populate({
-        path: 'students',
-        model: 'StudentDocument',
-      })
-      .exec();
+      },
+      {
+        $unwind: {
+          path: '$professor',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: 'user',
+          localField: 'professor.user',
+          foreignField: '_id',
+          as: 'professorUser',
+        },
+      },
+      {
+        $unwind: {
+          path: '$professorUser',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: 'classroom',
+          localField: 'classroom',
+          foreignField: '_id',
+          as: 'classroom',
+        },
+      },
+      {
+        $unwind: {
+          path: '$classroom',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: 'lesson',
+          localField: 'lesson',
+          foreignField: '_id',
+          as: 'lesson',
+        },
+      },
+      {
+        $unwind: {
+          path: '$lesson',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: 'student',
+          localField: 'students',
+          foreignField: '_id',
+          as: 'students',
+        },
+      },
+    ];
+
+    const trimmed = search?.trim();
+    if (trimmed) {
+      const regex = new RegExp(trimmed, 'i');
+      pipeline.push({
+        $match: {
+          $or: [
+            { 'classroom.room_number': regex },
+            { 'lesson.title': regex },
+            { 'lesson.lessonId': regex },
+            { 'professorUser.firstName': regex },
+            { 'professorUser.lastName': regex },
+          ],
+        },
+      } as unknown as PipelineStage);
+    }
+
+    const results = await this._repository.aggregate(pipeline).exec();
+    return results as SectionDocument[];
   }
 
   create(createSectionDto: CreateSectionDto): Promise<SectionDocument> {

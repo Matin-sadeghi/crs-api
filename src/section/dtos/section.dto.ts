@@ -12,6 +12,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { DayOfWeek } from 'src/utils/enum';
+import { UserResponseDto } from 'src/user/dtos/user-response.dto';
 
 export class ScheduleDto {
   @ApiProperty({
@@ -105,9 +106,12 @@ export class ProfessorDto {
 
   @ApiProperty()
   professorId!: string;
-
   @ApiProperty()
   education!: string;
+  @ApiProperty()
+  faculty: string;
+  @ApiProperty()
+  user: string;
 }
 
 export class ClassroomDto {
@@ -166,6 +170,9 @@ export class SectionResponseDto {
 
   @ApiProperty({ type: ProfessorDto })
   professor!: ProfessorDto;
+
+  @ApiProperty({ type: UserResponseDto })
+  professorUser!: UserResponseDto;
 
   @ApiProperty({ type: ClassroomDto })
   classroom!: ClassroomDto;

@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -14,14 +15,14 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { UserRole } from 'src/utils/enum';
-import { HttpResponseDto } from 'src/utils/util.dto';
-import { SectionService } from '../services/section.service';
+import { SearchDto as FilterDto, HttpResponseDto } from 'src/utils/util.dto';
+import { SectionDocument } from '../database/schema/section.schema';
 import {
   CreateSectionDto,
-  UpdateSectionDto,
   SectionResponseDto,
+  UpdateSectionDto,
 } from '../dtos/section.dto';
-import { SectionDocument } from '../database/schema/section.schema';
+import { SectionService } from '../services/section.service';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('/section')
@@ -33,14 +34,17 @@ export class SectionController {
   ) {}
 
   @Get()
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.STUDENT)
   @ApiOperation({ summary: 'Get all sections' })
   @ApiResponse({
     type: SectionResponseDto,
     isArray: true,
   })
-  getAllSections(): Promise<SectionDocument[]> {
-    return this.sectionService.getAllSections();
+  getAllSections(
+    @Query()
+    filter: FilterDto,
+  ): Promise<SectionDocument[]> {
+    return this.sectionService.getAllSections(filter?.search ?? '');
   }
 
   @Get(':id')
