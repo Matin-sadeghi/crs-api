@@ -1,98 +1,314 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Course Registration System (CRS) API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A comprehensive RESTful API for managing course registration, scheduling, and academic administration built with NestJS and MongoDB.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 📋 Table of Contents
 
-## Description
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [Environment Variables](#environment-variables)
+- [API Documentation](#api-documentation)
+- [Modules](#modules)
+- [Authentication](#authentication)
+- [Database Schema](#database-schema)
+- [API Endpoints](#api-endpoints)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## ✨ Features
 
-## Project setup
+- **User Management**: Support for multiple user roles (Admin, Student, Professor)
+- **Authentication & Authorization**: JWT-based authentication with role-based access control
+- **Course Management**: Create and manage lessons, prerequisites, and course units
+- **Classroom Management**: Manage classrooms with capacity and faculty associations
+- **Section Scheduling**: Create sections with time schedules and conflict detection
+- **Student Enrollment**: Manage student registrations and major assignments
+- **Faculty Management**: Handle professor profiles and faculty associations
+- **Swagger Documentation**: Interactive API documentation
+- **Data Validation**: Comprehensive input validation using class-validator
+- **MongoDB Integration**: Efficient data storage with Mongoose ODM
 
-```bash
-$ npm install
+## 🛠 Tech Stack
+
+- **Framework**: [NestJS](https://nestjs.com/) - Progressive Node.js framework
+- **Language**: TypeScript
+- **Database**: MongoDB with Mongoose
+- **Authentication**: JWT (JSON Web Tokens) with Passport
+- **Validation**: class-validator, class-transformer
+- **Documentation**: Swagger/OpenAPI
+- **Security**: bcrypt for password hashing
+
+## 📁 Project Structure
+
+```
+src/
+├── admin/          # Admin management module
+├── auth/           # Authentication & authorization
+├── classroom/      # Classroom management
+├── faculty/        # Faculty management
+├── lesson/         # Course/lesson management
+├── major/          # Major/degree program management
+├── professor/      # Professor management
+├── section/        # Section scheduling and enrollment
+├── student/        # Student management
+├── user/           # User management
+├── seed/           # Database seeding utilities
+└── utils/          # Utility functions and enums
 ```
 
-## Compile and run the project
+## 🚀 Getting Started
 
+### Prerequisites
+
+- Node.js (v20.x or higher)
+- npm or yarn
+- MongoDB instance (local or cloud)
+
+### Installation
+
+1. Clone the repository:
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+git clone <repository-url>
+cd crs-api
 ```
 
-## Run tests
-
+2. Install dependencies:
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm install
 ```
 
-## Deployment
+3. Set up environment variables (see [Environment Variables](#environment-variables))
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+4. Run the application:
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Development mode
+npm run start:dev
+
+# Production mode
+npm run build
+npm run start:prod
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## 🔐 Environment Variables
 
-## Resources
+Create a `.env` file in the root directory:
 
-Check out a few resources that may come in handy when working with NestJS:
+```env
+MONGO_URI_CONN=mongodb://localhost:27017/crs
+PORT=3000
+JWT_SECRET=your-secret-key-here
+JWT_EXPIRES_IN=7d
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## 📚 API Documentation
 
-## Support
+Once the server is running, access the Swagger documentation at:
+```
+http://localhost:3000/api/docs
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+The API documentation provides:
+- Interactive API explorer
+- Request/response schemas
+- Authentication testing
+- Example payloads
 
-## Stay in touch
+## 📦 Modules
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### User Module
+- User registration and management
+- Role-based user profiles (Admin, Student, Professor)
+- User authentication
 
-## License
+### Auth Module
+- JWT token generation and validation
+- Login/logout functionality
+- Role-based access control (RBAC)
+- Protected routes with guards
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### Lesson Module
+- Course/lesson creation and management
+- Prerequisite management
+- Lesson types (General, Specialized, Mandatory, Elective, Lab)
+- Unit management
+
+### Section Module
+- Section creation with scheduling
+- Time slot conflict detection
+- Classroom assignment
+- Professor assignment
+- Student enrollment management
+
+### Classroom Module
+- Classroom management
+- Capacity tracking
+- Faculty association
+- Room number validation
+
+### Student Module
+- Student profile management
+- Major assignment
+- Student ID generation
+
+### Professor Module
+- Professor profile management
+- Education credentials
+- Faculty association
+
+### Faculty Module
+- Faculty/department management
+
+### Major Module
+- Academic major/degree program management
+
+## 🔒 Authentication
+
+The API uses JWT (JSON Web Tokens) for authentication:
+
+1. **Login**: POST `/auth/login`
+   - Returns JWT token and user information
+
+2. **Protected Routes**: Include token in Authorization header
+   ```
+   Authorization: Bearer <your-jwt-token>
+   ```
+
+3. **Roles**: 
+   - `ADMIN`: Full system access
+   - `PROFESSOR`: Professor-specific operations
+   - `STUDENT`: Student-specific operations
+
+## 💾 Database Schema
+
+### Key Entities
+
+- **User**: Base user information with role-based profiles
+- **Student**: Student-specific data with major association
+- **Professor**: Professor data with faculty and education info
+- **Admin**: Administrative user data
+- **Lesson**: Course information with prerequisites
+- **Section**: Class sections with schedules and enrollments
+- **Classroom**: Room information with capacity
+- **Faculty**: Academic faculty/department
+- **Major**: Academic major programs
+
+### Relationships
+
+- User → Student/Professor/Admin (one-to-one)
+- Section → Professor, Classroom, Lesson (many-to-one)
+- Section → Students (many-to-many)
+- Student → Major (many-to-one)
+- Professor → Faculty (many-to-one)
+- Classroom → Faculty (many-to-one)
+
+## 📡 API Endpoints
+
+### Authentication
+- `POST /auth/login` - User login
+
+### Lessons
+- `GET /lesson-admin` - Get all lessons
+- `GET /lesson-admin/:id` - Get lesson by ID
+- `POST /lesson-admin` - Create lesson (Admin only)
+- `PUT /lesson-admin/:id` - Update lesson (Admin only)
+- `DELETE /lesson-admin/:id` - Delete lesson (Admin only)
+
+### Sections
+- `GET /section` - Get all sections
+- `GET /section/:id` - Get section by ID
+- `POST /section` - Create section (Admin only)
+- `PUT /section/:id` - Update section (Admin only)
+- `DELETE /section/:id` - Delete section (Admin only)
+
+### Classrooms
+- `GET /classroom` - Get all classrooms
+- `GET /classroom/:id` - Get classroom by ID
+- `POST /classroom` - Create classroom (Admin only)
+- `PUT /classroom/:id` - Update classroom (Admin only)
+- `DELETE /classroom/:id` - Delete classroom (Admin only)
+
+### Students
+- `GET /student` - Get all students
+- `POST /student` - Create student
+
+### Professors
+- `GET /professor` - Get all professors
+- `POST /professor` - Create professor
+
+### Faculties
+- `GET /faculty` - Get all faculties
+- `POST /faculty` - Create faculty
+
+### Majors
+- `GET /major` - Get all majors
+- `POST /major` - Create major
+
+## 🎯 Key Features
+
+### Section Scheduling
+- Automatic conflict detection for classroom time slots
+- Support for multiple schedules per section
+- Time format validation (HH:mm, 24-hour format)
+- Day-of-week enum validation
+
+### Data Validation
+- Comprehensive input validation
+- Regex patterns for time formats
+- Enum validation for roles and types
+- MongoDB ObjectId validation
+
+### Security
+- Password hashing with bcrypt
+- JWT token-based authentication
+- Role-based access control
+- CORS configuration
+
+## 🧪 Testing
+
+```bash
+# Unit tests
+npm run test
+
+# E2E tests
+npm run test:e2e
+
+# Test coverage
+npm run test:cov
+```
+
+## 📝 Scripts
+
+```bash
+# Development
+npm run start:dev      # Start in watch mode
+
+# Production
+npm run build          # Build for production
+npm run start:prod     # Start production server
+
+# Code quality
+npm run lint           # Run ESLint
+npm run format         # Format code with Prettier
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is licensed under the UNLICENSED License.
+
+## 👤 Author
+
+Your Name
+
+## 🙏 Acknowledgments
+
+- Built with [NestJS](https://nestjs.com/)
+- Database powered by [MongoDB](https://www.mongodb.com/)
+- Documentation with [Swagger](https://swagger.io/)
+
+---
+
+For more information, visit the [API Documentation](http://localhost:3000/api/docs) when the server is running.
