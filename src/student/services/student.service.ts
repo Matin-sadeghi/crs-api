@@ -3,14 +3,17 @@ import {
   HttpStatus,
   Inject,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { UserStudentService } from 'src/user/services/user-student.service';
 import { HttpResponseDto } from '../../utils/util.dto';
-import { CreateStudentDto } from '../dtos/student.dto';
+import { CreateStudentDto, UpdateStudentDto } from '../dtos/student.dto';
 import type { StudentRepositoryPort } from '../interface/student.repository.port';
 import { studentIdGenerator } from 'src/utils/id-generator';
 import { MajorService } from 'src/major/services/major.service';
+import { UserService } from 'src/user/services/user.service';
+import { StudentDocument } from '../database/schema/student.schema';
 
 @Injectable()
 export class StudentService {
@@ -19,6 +22,7 @@ export class StudentService {
     private readonly studentRepository: StudentRepositoryPort,
     private readonly userStudentService: UserStudentService,
     private readonly majorService: MajorService,
+    private readonly userService: UserService,
   ) {}
 
   async createUser(
@@ -57,6 +61,50 @@ export class StudentService {
     return {
       status: HttpStatus.CREATED,
       message: 'Student created successfully',
+    };
+  }
+
+  async getAllStudents(): Promise<StudentDocument[]> {
+    return this.studentRepository.findAll();
+  }
+
+  async getStudentById(id: string): Promise<StudentDocument> {
+    const student = await this.studentRepository.findById(id);
+    if (!student) {
+      throw new NotFoundException('Student not found');
+    }
+    return student;
+  }
+
+  async deleteStudent(id: string): Promise<HttpResponseDto> {
+    const deletedStudent = await this.studentRepository.delete(id);
+    if (!deletedStudent) {
+      throw new NotFoundException('Student not found');
+    }
+
+    return {
+      status: HttpStatus.OK,
+      message: 'Student deleted successfully',
+    };
+  }
+
+  async updateStudent(
+    id: string,
+    updateStudentDto: UpdateStudentDto,
+  ): Promise<HttpResponseDto> {
+    const existingStudent = await this.studentRepository.findById(id);
+    if (!existingStudent) {
+      throw new NotFoundException('Student not found');
+    }
+
+    await this.userService.updateProfile(
+      existingStudent.user._id.toString(),
+      updateStudentDto,
+    );
+
+    return {
+      status: HttpStatus.OK,
+      message: 'Student updated successfully',
     };
   }
 }

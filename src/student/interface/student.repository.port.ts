@@ -12,5 +12,17 @@ export interface StudentRepositoryPort {
     createStudentData: CreateStudentData,
     _id: Types.ObjectId,
   ): Promise<StudentDocument>;
+
   findLast(major: string): Promise<StudentDocument | null>;
+
+  findAll(): Promise<StudentDocument[]>;
+
+  findById(id: string): Promise<StudentDocument | null>;
+
+  delete(id: string): Promise<StudentDocument | null>;
+
+  update(
+    id: string,
+    update: Partial<StudentDocument>,
+  ): Promise<StudentDocument | null>;
 }

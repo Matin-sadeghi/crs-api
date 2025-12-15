@@ -28,16 +28,40 @@ export class StudentRepository implements StudentRepositoryPort {
   }
 
   async findAll(): Promise<StudentDocument[]> {
-    return this._repository.find({}).exec();
+    return this._repository
+      .find({})
+      .populate({ path: 'user', model: 'UserDocument' })
+      .populate({ path: 'major', model: 'MajorDocument' })
+      .exec();
   }
 
   async findById(id: string): Promise<StudentDocument | null> {
-    return this._repository.findById(id).exec();
+    return this._repository
+      .findById(new Types.ObjectId(id))
+      .populate({ path: 'user', model: 'UserDocument' })
+      .populate({ path: 'major', model: 'MajorDocument' })
+      .exec();
   }
+
   async findLast(major: string): Promise<StudentDocument | null> {
     return this._repository
       .findOne({ major: new Types.ObjectId(major) })
       .sort({ createdAt: -1 })
+      .exec();
+  }
+
+  async delete(id: string): Promise<StudentDocument | null> {
+    return this._repository.findByIdAndDelete(new Types.ObjectId(id)).exec();
+  }
+
+  async update(
+    id: string,
+    update: Partial<StudentDocument>,
+  ): Promise<StudentDocument | null> {
+    return this._repository
+      .findByIdAndUpdate(new Types.ObjectId(id), update, { new: true })
+      .populate({ path: 'user', model: 'UserDocument' })
+      .populate({ path: 'major', model: 'MajorDocument' })
       .exec();
   }
 }
