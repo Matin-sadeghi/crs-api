@@ -77,16 +77,9 @@ export class SectionService {
     return null;
   }
 
-  async getAllSections(): Promise<SectionDocument[]> {
-    const sections = await this.sectionRepository.getAll();
+  async getAllSections(search: string): Promise<SectionDocument[]> {
+    const sections = await this.sectionRepository.getAll(search);
     return sections;
-  }
-
-  async searchSectionsForStudent(search: string): Promise<SectionDocument[]> {
-    if (!search || !search.trim()) {
-      return this.sectionRepository.getAll();
-    }
-    return this.sectionRepository.searchByProfessorOrLesson(search.trim());
   }
 
   async getOneSection(id: string): Promise<SectionDocument> {

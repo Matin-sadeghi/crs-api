@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class HttpResponseDto<T = unknown> {
   @IsNumber()
@@ -11,4 +11,11 @@ export class HttpResponseDto<T = unknown> {
   message: string;
 
   data?: T;
+}
+
+export class SearchDto {
+  @IsOptional()
+  @IsString()
+  @ApiProperty({ required: false })
+  search?: string = '';
 }

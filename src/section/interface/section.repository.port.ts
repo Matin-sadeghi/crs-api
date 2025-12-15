@@ -3,7 +3,7 @@ import { CreateSectionDto, UpdateSectionDto } from '../dtos/section.dto';
 import { Schedule } from '../database/schema/section.schema';
 
 export interface SectionRepositoryPort {
-  getAll(): Promise<SectionDocument[]>;
+  getAll(search: string): Promise<SectionDocument[]>;
 
   create(createSectionDto: CreateSectionDto): Promise<SectionDocument>;
 
@@ -15,10 +15,6 @@ export interface SectionRepositoryPort {
     id: string,
     updateSectionDto: UpdateSectionDto,
   ): Promise<SectionDocument | null>;
-
-  searchByProfessorOrLesson(
-    search: string,
-  ): Promise<SectionDocument[]>;
 
   findConflictingSections(
     classroomId: string,
