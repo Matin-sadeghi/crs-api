@@ -12,7 +12,7 @@ export interface UserRepositoryPort {
   findByUsername(studentId: string): Promise<UserDocument | null>;
   findByUserId(userId: string): Promise<UserDocument | null>;
   updateTokens(id: string, accessToken: string, refreshToken: string);
-  update(id: string, item: any);
+  update(id: string, item: Partial<UserDocument>): Promise<UserDocument | null>;
   updatePassword(
     userId: string,
     password: string,
