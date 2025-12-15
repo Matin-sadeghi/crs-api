@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEnum,
+  IsNumber,
   IsOptional,
   IsString,
   MaxLength,
@@ -85,6 +86,16 @@ export class UpdateStudentDto {
   @IsOptional()
   @MinLength(3)
   address?: string;
+
+  @ApiProperty({ required: false, default: 12 })
+  @IsNumber()
+  @IsOptional()
+  minUnit?: number;
+
+  @ApiProperty({ required: false, default: 20 })
+  @IsNumber()
+  @IsOptional()
+  maxUnit?: number;
 }
 
 export class StudentResponseDto {
@@ -99,6 +110,12 @@ export class StudentResponseDto {
 
   @ApiProperty({ type: String })
   user!: string;
+
+  @ApiProperty({ required: false, default: 12 })
+  minUnit!: number;
+
+  @ApiProperty({ required: false, default: 20 })
+  maxUnit!: number;
 
   @ApiProperty()
   createdAt!: Date;
