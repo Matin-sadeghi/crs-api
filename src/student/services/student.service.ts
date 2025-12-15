@@ -99,10 +99,29 @@ export class StudentService {
 
     const { minUnit, maxUnit, ...userProfileUpdate } = updateStudentDto;
 
-    await this.userService.updateProfile(
-      existingStudent.user._id.toString(),
-      userProfileUpdate,
+    // Only update user profile if there are actual user fields (not just minUnit/maxUnit)
+    // Valid user fields: firstName, lastName, phone, address, gender
+    const validUserFields = ['firstName', 'lastName', 'phone', 'address', 'gender'];
+    const hasUserFields = validUserFields.some(
+      (field) => userProfileUpdate[field] !== undefined,
     );
+
+    if (hasUserFields) {
+      if (!existingStudent.user) {
+        throw new NotFoundException('Related user not found for student');
+      }
+
+      // Handle both populated user object and ObjectId
+      let userId: string;
+      if (existingStudent.user instanceof Types.ObjectId) {
+        userId = existingStudent.user.toString();
+      } else {
+        const userObj = existingStudent.user as any;
+        userId = userObj._id?.toString() || userObj.toString();
+      }
+
+      await this.userService.updateProfile(userId, userProfileUpdate);
+    }
 
     if (minUnit !== undefined || maxUnit !== undefined) {
       const updateData: Partial<StudentDocument> = {};
