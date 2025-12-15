@@ -97,10 +97,28 @@ export class StudentService {
       throw new NotFoundException('Student not found');
     }
 
+    const { minUnit, maxUnit, ...userProfileUpdate } = updateStudentDto;
+
     await this.userService.updateProfile(
       existingStudent.user._id.toString(),
-      updateStudentDto,
+      userProfileUpdate,
     );
+
+    if (minUnit !== undefined || maxUnit !== undefined) {
+      const updateData: Partial<StudentDocument> = {};
+
+      if (minUnit !== undefined) {
+        updateData.minUnit = minUnit;
+      }
+
+      if (maxUnit !== undefined) {
+        updateData.maxUnit = maxUnit;
+      }
+
+      if (Object.keys(updateData).length > 0) {
+        await this.studentRepository.update(id, updateData);
+      }
+    }
 
     return {
       status: HttpStatus.OK,

@@ -19,6 +19,13 @@ export class StudentDocument {
 
   @Prop({ type: Types.ObjectId, ref: 'UserDocument', required: true })
   user: Types.ObjectId;
+
+  @Prop({ default: 12 })
+  minUnit: number;
+
+  @Prop({ default: 20 })
+  maxUnit: number;
+
   @Prop({ default: Date.now })
   createdAt: Date;
 
