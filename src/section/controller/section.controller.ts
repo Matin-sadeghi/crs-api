@@ -34,7 +34,7 @@ export class SectionController {
   ) {}
 
   @Get()
-  @Roles(UserRole.ADMIN, UserRole.STUDENT)
+  @Roles(UserRole.ADMIN, UserRole.STUDENT, UserRole.PROFESSOR)
   @ApiOperation({ summary: 'Get all sections' })
   @ApiResponse({
     type: SectionResponseDto,
@@ -48,7 +48,7 @@ export class SectionController {
   }
 
   @Get(':id')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.STUDENT, UserRole.PROFESSOR)
   @ApiOperation({ summary: 'Get one section' })
   @ApiResponse({
     type: SectionResponseDto,
