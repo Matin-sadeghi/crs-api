@@ -97,46 +97,23 @@ export class StudentService {
       throw new NotFoundException('Student not found');
     }
 
-    const { minUnit, maxUnit, ...userProfileUpdate } = updateStudentDto;
-
-    // Only update user profile if there are actual user fields (not just minUnit/maxUnit)
-    // Valid user fields: firstName, lastName, phone, address, gender
-    const validUserFields = ['firstName', 'lastName', 'phone', 'address', 'gender'];
-    const hasUserFields = validUserFields.some(
-      (field) => userProfileUpdate[field] !== undefined,
+    await this.userService.updateProfile(
+      existingStudent.user._id.toString(),
+      updateStudentDto,
     );
 
-    if (hasUserFields) {
-      if (!existingStudent.user) {
-        throw new NotFoundException('Related user not found for student');
-      }
+    const updateData: Partial<StudentDocument> = {};
 
-      // Handle both populated user object and ObjectId
-      let userId: string;
-      if (existingStudent.user instanceof Types.ObjectId) {
-        userId = existingStudent.user.toString();
-      } else {
-        const userObj = existingStudent.user as any;
-        userId = userObj._id?.toString() || userObj.toString();
-      }
-
-      await this.userService.updateProfile(userId, userProfileUpdate);
+    if (updateStudentDto.minUnit !== undefined) {
+      updateData.minUnit = updateStudentDto.minUnit;
     }
 
-    if (minUnit !== undefined || maxUnit !== undefined) {
-      const updateData: Partial<StudentDocument> = {};
+    if (updateStudentDto.maxUnit !== undefined) {
+      updateData.maxUnit = updateStudentDto.maxUnit;
+    }
 
-      if (minUnit !== undefined) {
-        updateData.minUnit = minUnit;
-      }
-
-      if (maxUnit !== undefined) {
-        updateData.maxUnit = maxUnit;
-      }
-
-      if (Object.keys(updateData).length > 0) {
-        await this.studentRepository.update(id, updateData);
-      }
+    if (Object.keys(updateData).length > 0) {
+      await this.studentRepository.update(id, updateData);
     }
 
     return {
