@@ -26,6 +26,27 @@ export class StudentDocument {
   @Prop({ default: 20 })
   maxUnit: number;
 
+  @Prop({ default: 0 })
+  unit: number;
+
+  @Prop([
+    {
+      type: Types.ObjectId,
+      ref: 'LessonDocument',
+      required: false,
+    },
+  ])
+  lessonPassed: Types.ObjectId[];
+
+  @Prop([
+    {
+      type: Types.ObjectId,
+      ref: 'SectionDocument',
+      required: false,
+    },
+  ])
+  sectionTaken: Types.ObjectId[];
+
   @Prop({ default: Date.now })
   createdAt: Date;
 

@@ -8,18 +8,24 @@ import {
 import { Types } from 'mongoose';
 import { UserStudentService } from 'src/user/services/user-student.service';
 import { HttpResponseDto } from '../../utils/util.dto';
-import { CreateStudentDto, UpdateStudentDto } from '../dtos/student.dto';
+import {
+  CreateStudentDto,
+  UpdateStudentDto,
+  AddLessonPassedDto,
+} from '../dtos/student.dto';
 import type { StudentRepositoryPort } from '../interface/student.repository.port';
 import { studentIdGenerator } from 'src/utils/id-generator';
 import { MajorService } from 'src/major/services/major.service';
 import { UserService } from 'src/user/services/user.service';
 import { StudentDocument } from '../database/schema/student.schema';
+import { LessonAdminService } from 'src/lesson/services/lesson-admin.service';
 
 @Injectable()
 export class StudentService {
   constructor(
     @Inject('STUDENT_REPOSITORY')
     private readonly studentRepository: StudentRepositoryPort,
+    private readonly lessonAdminService: LessonAdminService,
     private readonly userStudentService: UserStudentService,
     private readonly majorService: MajorService,
     private readonly userService: UserService,
@@ -119,6 +125,66 @@ export class StudentService {
     return {
       status: HttpStatus.OK,
       message: 'Student updated successfully',
+    };
+  }
+
+  async addLessonPassed(
+    addLessonPassedDto: AddLessonPassedDto,
+  ): Promise<HttpResponseDto> {
+    const { studentId, lessonId } = addLessonPassedDto;
+
+    // Find student by studentId
+    const student = await this.studentRepository.findOneByStudentId(studentId);
+    if (!student) {
+      throw new NotFoundException('Student not found');
+    }
+
+    // Find lesson by lessonId
+    const lesson =
+      await this.lessonAdminService.getOneLessonByLessonId(lessonId);
+
+    // Check if lesson is already in lessonPassed
+    const lessonObjectId = lesson._id;
+    const lessonPassedIds = (student.lessonPassed || []).map((id) =>
+      id.toString(),
+    );
+    if (lessonPassedIds.includes(lessonObjectId.toString())) {
+      throw new BadRequestException('Lesson already marked as passed');
+    }
+
+    // Check prerequisites
+    if (lesson.prerequisite && lesson.prerequisite.length > 0) {
+      const prerequisiteIds = lesson.prerequisite.map((id) => id.toString());
+      const missingPrerequisites = prerequisiteIds.filter(
+        (prereqId) => !lessonPassedIds.includes(prereqId),
+      );
+
+      if (missingPrerequisites.length > 0) {
+        const missingLessons =
+          await this.lessonAdminService.getLessonsById(missingPrerequisites);
+        const missingLessonIds = missingLessons
+          .map((l) => l.lessonId)
+          .join(', ');
+        throw new BadRequestException(
+          `Student has not passed all prerequisites. Missing: ${missingLessonIds}`,
+        );
+      }
+    }
+
+    // Add lesson to lessonPassed
+    const updatedLessonPassed = [
+      ...(student.lessonPassed || []),
+      lessonObjectId,
+    ];
+
+    await this.studentRepository.update(student._id.toString(), {
+      lessonPassed: updatedLessonPassed,
+      updatedAt: new Date(),
+    });
+
+    return {
+      status: HttpStatus.OK,
+      message: 'Lesson added to passed lessons successfully',
     };
   }
 }

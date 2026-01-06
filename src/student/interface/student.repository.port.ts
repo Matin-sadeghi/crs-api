@@ -19,6 +19,8 @@ export interface StudentRepositoryPort {
 
   findById(id: string): Promise<StudentDocument | null>;
 
+  findOneByStudentId(studentId: string): Promise<StudentDocument | null>;
+
   delete(id: string): Promise<StudentDocument | null>;
 
   update(

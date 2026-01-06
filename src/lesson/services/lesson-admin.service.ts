@@ -30,6 +30,18 @@ export class LessonAdminService {
     return lesson;
   }
 
+  async getOneLessonByLessonId(lessonId: string): Promise<LessonDocument> {
+    const lesson = await this.lessonRepository.getOneByLessonId(lessonId);
+    if (!lesson) {
+      throw new NotFoundException('Lesson not found');
+    }
+    return lesson;
+  }
+
+  async getLessonsById(ids: string[]): Promise<LessonDocument[]> {
+    return this.lessonRepository.getLessonsById(ids);
+  }
+
   async createLesson(
     createLessonDto: CreateLessonDto,
     adminUserId: string,

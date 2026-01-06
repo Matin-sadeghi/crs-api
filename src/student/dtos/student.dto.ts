@@ -123,3 +123,15 @@ export class StudentResponseDto {
   @ApiProperty({ required: false })
   updatedAt?: Date;
 }
+
+export class AddLessonPassedDto {
+  @ApiProperty({ example: '4010250001', description: 'Student ID' })
+  @IsString()
+  @MinLength(1)
+  studentId!: string;
+
+  @ApiProperty({ example: '4010250001', description: 'Lesson ID' })
+  @IsString()
+  @MinLength(1)
+  lessonId!: string;
+}

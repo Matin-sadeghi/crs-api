@@ -14,6 +14,7 @@ import {
   CreateStudentDto,
   StudentResponseDto,
   UpdateStudentDto,
+  AddLessonPassedDto,
 } from '../dtos/student.dto';
 import { StudentService } from '../services/student.service';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
@@ -80,5 +81,17 @@ export class StudentController {
     @Body() updateStudentDto: UpdateStudentDto,
   ): Promise<HttpResponseDto> {
     return this.studentService.updateStudent(id, updateStudentDto);
+  }
+
+  @Post('lesson-passed')
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: 'Add a lesson to student passed lessons' })
+  @ApiResponse({
+    type: HttpResponseDto,
+  })
+  addLessonPassed(
+    @Body() addLessonPassedDto: AddLessonPassedDto,
+  ): Promise<HttpResponseDto> {
+    return this.studentService.addLessonPassed(addLessonPassedDto);
   }
 }

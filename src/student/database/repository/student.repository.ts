@@ -43,6 +43,14 @@ export class StudentRepository implements StudentRepositoryPort {
       .exec();
   }
 
+  async findOneByStudentId(studentId: string): Promise<StudentDocument | null> {
+    return this._repository
+      .findOne({ studentId })
+      .populate({ path: 'user', model: 'UserDocument' })
+      .populate({ path: 'major', model: 'MajorDocument' })
+      .exec();
+  }
+
   async findLast(major: string): Promise<StudentDocument | null> {
     return this._repository
       .findOne({ major: new Types.ObjectId(major) })
