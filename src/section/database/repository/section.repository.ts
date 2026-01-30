@@ -64,6 +64,14 @@ export class SectionRepository implements SectionRepositoryPort {
       },
       {
         $lookup: {
+          from: 'faculty',
+          localField: 'classroom.faculty',
+          foreignField: '_id',
+          as: 'classroomFaculty',
+        },
+      },
+      {
+        $lookup: {
           from: 'lesson',
           localField: 'lesson',
           foreignField: '_id',
