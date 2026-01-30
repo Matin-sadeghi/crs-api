@@ -121,22 +121,22 @@ export class SectionService {
     }
 
     // Check for scheduling conflicts in the same classroom
-    // const existingSections =
-    //   await this.sectionRepository.findConflictingSections(
-    //     createSectionDto.classroom,
-    //     createSectionDto.schedules,
-    //   );
+    const existingSections =
+      await this.sectionRepository.findConflictingSections(
+        createSectionDto.classroom,
+        createSectionDto.schedules,
+      );
 
-    // const conflictingSection = this.checkScheduleConflicts(
-    //   createSectionDto.schedules,
-    //   existingSections,
-    // );
+    const conflictingSection = this.checkScheduleConflicts(
+      createSectionDto.schedules,
+      existingSections,
+    );
 
-    // if (conflictingSection) {
-    //   throw new BadRequestException(
-    //     `Classroom is already booked at this time slot. Conflicting section ID: ${conflictingSection._id.toString()}`,
-    //   );
-    // }
+    if (conflictingSection) {
+      throw new BadRequestException(
+        `Classroom is already booked at this time slot. Conflicting section ID: ${conflictingSection._id.toString()}`,
+      );
+    }
 
     const newSection = await this.sectionRepository.create(createSectionDto);
 
@@ -199,30 +199,6 @@ export class SectionService {
       }
     }
 
-    // Check for scheduling conflicts if classroom or schedules are being updated
-    // const classroomToCheck =
-    //   updateSectionDto.classroom ?? existingSection.classroom.toString();
-    // const schedulesToCheck =
-    //   updateSectionDto.schedules ?? existingSection.schedules;
-
-    // const existingSections =
-    //   await this.sectionRepository.findConflictingSections(
-    //     classroomToCheck,
-    //     schedulesToCheck,
-    //     id, // Exclude current section
-    //   );
-
-    // const conflictingSection = this.checkScheduleConflicts(
-    //   schedulesToCheck,
-    //   existingSections,
-    // );
-
-    // if (conflictingSection) {
-    //   throw new BadRequestException(
-    //     `Classroom is already booked at this time slot. Conflicting section ID: ${conflictingSection._id.toString()}`,
-    //   );
-    // }
-
     const updatedSection = await this.sectionRepository.update(
       id,
       updateSectionDto,
@@ -251,7 +227,6 @@ export class SectionService {
     // Get student by ID
     const student = await this.studentService.getStudentById(studentId);
 
-    //HACK:: check min and max unit of student
     // Check if student is already enrolled
     const studentObjectId = student._id;
     const enrolledStudentIds = (section.students || []).map((id) =>
@@ -260,6 +235,31 @@ export class SectionService {
     if (enrolledStudentIds.includes(studentObjectId.toString())) {
       throw new BadRequestException(
         'Student is already enrolled in this section',
+      );
+    }
+
+    // Check that student has no other sections at the same time (schedule overlap)
+    const studentSections = await this.sectionRepository.findByStudent(
+      studentObjectId.toString(),
+    );
+    const conflictingSection = this.checkScheduleConflicts(
+      section.schedules,
+      studentSections,
+    );
+    if (conflictingSection) {
+      throw new BadRequestException(
+        `Student already has a section at this time. Conflicting section ID: ${conflictingSection._id.toString()}`,
+      );
+    }
+
+    // Check that student does not already have this lesson in sectionTaken
+    const targetLessonId = section.lesson._id.toString();
+    const alreadyTakingThisLesson = studentSections.some(
+      (s) => s.lesson._id.toString() === targetLessonId,
+    );
+    if (alreadyTakingThisLesson) {
+      throw new BadRequestException(
+        'Student is already enrolled in another section of this lesson.',
       );
     }
 

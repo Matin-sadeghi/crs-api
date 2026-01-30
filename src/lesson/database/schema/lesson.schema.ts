@@ -33,7 +33,7 @@ export class LessonDocument {
   @Prop({ enum: LessonType })
   type: LessonType;
 
-  @Prop({ type: String, required: true })
+  @Prop({ type: String, required: false })
   field: string;
 
   @Prop({ type: Types.ObjectId, ref: 'UserDocument', required: true })

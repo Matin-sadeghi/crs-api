@@ -43,7 +43,8 @@ export class CreateLessonDto {
     description: 'Educational field / department',
   })
   @IsString()
-  field!: string;
+  @IsOptional()
+  field: string;
 }
 
 export class UpdateLessonDto {
