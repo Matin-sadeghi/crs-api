@@ -21,4 +21,12 @@ export interface SectionRepositoryPort {
     schedules: Schedule[],
     excludeSectionId?: string,
   ): Promise<SectionDocument[]>;
+
+  addStudentToSection(sectionId: string, studentId: string): Promise<void>;
+
+  findByProfessor(professorId: string): Promise<SectionDocument[]>;
+
+  findByStudent(studentId: string): Promise<SectionDocument[]>;
+
+  removeStudentFromSection(sectionId: string, studentId: string): Promise<void>;
 }

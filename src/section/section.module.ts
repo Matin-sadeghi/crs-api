@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ClassroomModule } from 'src/classroom/classroom.module';
 import { LessonModule } from 'src/lesson/lesson.module';
 import { ProfessorModule } from 'src/professor/professor.module';
+import { StudentModule } from 'src/student/student.module';
 import { SectionController } from './controller/section.controller';
 import { SectionRepository } from './database/repository/section.repository';
 import {
@@ -20,6 +21,7 @@ const repositories: Provider[] = [
     ProfessorModule,
     ClassroomModule,
     LessonModule,
+    StudentModule,
     MongooseModule.forFeature([
       { name: SectionDocument.name, schema: SectionSchema },
     ]),

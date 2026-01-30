@@ -22,6 +22,8 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { UserRole } from 'src/utils/enum';
 import { StudentDocument } from '../database/schema/student.schema';
+import { UserDocument } from 'src/user/database/schema/user.schema';
+import { User } from 'src/utils/decorators/auth.decorator';
 
 @Controller('student')
 @ApiBearerAuth('JWT-auth')
@@ -93,5 +95,12 @@ export class StudentController {
     @Body() addLessonPassedDto: AddLessonPassedDto,
   ): Promise<HttpResponseDto> {
     return this.studentService.addLessonPassed(addLessonPassedDto);
+  }
+
+  @Get('me/academic-status')
+  @Roles(UserRole.STUDENT)
+  async getMyAcademicStatus(@User() user: UserDocument) {
+    const studentId = user.student.toString();
+    return await this.studentService.getAcademicStatus(studentId);
   }
 }

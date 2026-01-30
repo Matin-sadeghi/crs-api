@@ -142,6 +142,10 @@ export class SectionRepository implements SectionRepositoryPort {
       .populate({
         path: 'students',
         model: 'StudentDocument',
+        populate: {
+          path: 'user',
+          model: 'UserDocument',
+        },
       })
       .exec();
   }
@@ -204,5 +208,77 @@ export class SectionRepository implements SectionRepositoryPort {
 
     // Find all sections in the same classroom
     return this._repository.find(query).exec();
+  }
+
+  async addStudentToSection(
+    sectionId: string,
+    studentId: string,
+  ): Promise<void> {
+    const sectionObjectId = new Types.ObjectId(sectionId);
+    const studentObjectId = new Types.ObjectId(studentId);
+
+    await this._repository.updateOne(
+      { _id: sectionObjectId },
+      { $push: { students: studentObjectId } },
+    );
+  }
+
+  async findByProfessor(professorId: string): Promise<SectionDocument[]> {
+    return this._repository
+      .find({ professor: new Types.ObjectId(professorId) })
+      .populate({
+        path: 'students',
+        model: 'StudentDocument',
+        populate: {
+          path: 'user',
+          model: 'UserDocument',
+          select: 'firstName lastName username',
+        },
+      })
+      .populate({
+        path: 'lesson',
+        model: 'LessonDocument',
+      })
+      .populate({
+        path: 'classroom',
+        model: 'ClassroomDocument',
+      })
+      .exec();
+  }
+
+  async findByStudent(studentId: string): Promise<SectionDocument[]> {
+    return this._repository
+      .find({ students: new Types.ObjectId(studentId) })
+      .populate({
+        path: 'lesson',
+        model: 'LessonDocument',
+      })
+      .populate({
+        path: 'professor',
+        model: 'ProfessorDocument',
+        populate: {
+          path: 'user',
+          model: 'UserDocument',
+        },
+      })
+      .populate({
+        path: 'classroom',
+        model: 'ClassroomDocument',
+        populate: {
+          path: 'faculty',
+          model: 'FacultyDocument',
+        },
+      })
+      .exec();
+  }
+
+  async removeStudentFromSection(
+    sectionId: string,
+    studentId: string,
+  ): Promise<void> {
+    await this._repository.updateOne(
+      { _id: new Types.ObjectId(sectionId) },
+      { $pull: { students: new Types.ObjectId(studentId) } },
+    );
   }
 }

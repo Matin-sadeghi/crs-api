@@ -31,6 +31,6 @@ const repositories: Provider[] = [
   ],
   controllers: [StudentController],
   providers: [StudentService, ...repositories],
-  exports: [],
+  exports: [StudentService],
 })
 export class StudentModule {}

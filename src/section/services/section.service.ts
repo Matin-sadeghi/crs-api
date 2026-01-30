@@ -8,6 +8,7 @@ import {
 import { ClassroomService } from 'src/classroom/services/classroom.service';
 import { LessonAdminService } from 'src/lesson/services/lesson-admin.service';
 import { ProfessorService } from 'src/professor/services/professor.service';
+import { StudentService } from 'src/student/services/student.service';
 import { HttpResponseDto } from 'src/utils/util.dto';
 import { SectionDocument, Schedule } from '../database/schema/section.schema';
 import { CreateSectionDto, UpdateSectionDto } from '../dtos/section.dto';
@@ -21,6 +22,7 @@ export class SectionService {
     private readonly professorService: ProfessorService,
     private readonly classroomService: ClassroomService,
     private readonly lessonService: LessonAdminService,
+    private readonly studentService: StudentService,
   ) {}
 
   /**
@@ -233,6 +235,188 @@ export class SectionService {
       status: HttpStatus.OK,
       message: 'Section updated successfully',
       data: updatedSection,
+    };
+  }
+
+  async enrollStudent(
+    sectionId: string,
+    studentId: string,
+  ): Promise<HttpResponseDto> {
+    // Get section
+    const section = await this.sectionRepository.getOne(sectionId);
+    if (!section) {
+      throw new NotFoundException('Section not found');
+    }
+
+    // Get student by ID
+    const student = await this.studentService.getStudentById(studentId);
+
+    //HACK:: check min and max unit of student
+    // Check if student is already enrolled
+    const studentObjectId = student._id;
+    const enrolledStudentIds = (section.students || []).map((id) =>
+      id.toString(),
+    );
+    if (enrolledStudentIds.includes(studentObjectId.toString())) {
+      throw new BadRequestException(
+        'Student is already enrolled in this section',
+      );
+    }
+
+    // Check capacity
+    const currentEnrollment = section.students?.length || 0;
+    if (currentEnrollment + 1 > section.capacity) {
+      throw new BadRequestException('Section is at full capacity');
+    }
+
+    // Get lesson from section
+
+    const lesson = await this.lessonService.getOneLesson(
+      section.lesson._id.toString(),
+    );
+
+    // Check if student already passed this lesson
+    const lessonPassedIds = (student.lessonPassed || []).map((id) =>
+      id.toString(),
+    );
+    if (lessonPassedIds.includes(lesson._id.toString())) {
+      throw new BadRequestException(
+        'Student has already passed this lesson. Cannot enroll in section.',
+      );
+    }
+
+    // Check prerequisites
+    if (lesson.prerequisite && lesson.prerequisite.length > 0) {
+      const prerequisiteIds = lesson.prerequisite.map((prereqId) =>
+        prereqId._id.toString(),
+      );
+      const missingPrerequisites = prerequisiteIds.filter(
+        (prereqId) => !lessonPassedIds.includes(prereqId),
+      );
+
+      if (missingPrerequisites.length > 0) {
+        const missingLessons =
+          await this.lessonService.getLessonsById(missingPrerequisites);
+        const missingLessonIds = missingLessons
+          .map((l) => l.lessonId)
+          .join(', ');
+        throw new BadRequestException(
+          `Student has not passed all prerequisites. Missing: ${missingLessonIds}`,
+        );
+      }
+    }
+
+    if (student.unit + lesson.unit > student.maxUnit)
+      throw new BadRequestException(`you can get ${student.maxUnit} unit`);
+
+    // Add student to section using repository method
+    section.students.push(student._id);
+    await this.sectionRepository.addStudentToSection(
+      sectionId,
+      studentObjectId.toString(),
+    );
+
+    await this.studentService.addSection(
+      sectionId,
+      student.studentId,
+      lesson.unit,
+    );
+
+    return {
+      status: HttpStatus.OK,
+      message: 'Student enrolled in section successfully',
+    };
+  }
+  getSectionsByProfessor(professorId: string): Promise<SectionDocument[]> {
+    return this.sectionRepository.findByProfessor(professorId);
+  }
+  getSectionsByStudent(studentId: string): Promise<SectionDocument[]> {
+    return this.sectionRepository.findByStudent(studentId);
+  }
+  async removeStudentFromSection(
+    sectionId: string,
+    studentId: string,
+    professorId: string,
+  ): Promise<HttpResponseDto> {
+    const section = await this.sectionRepository.getOne(sectionId);
+    if (!section) {
+      throw new NotFoundException('Section not found');
+    }
+
+    if (section.professor._id.toString() !== professorId) {
+      throw new BadRequestException(
+        'You are not allowed to modify this section',
+      );
+    }
+
+    const student = await this.studentService.getStudentById(studentId);
+    if (!student) {
+      throw new NotFoundException('Student not found');
+    }
+
+    const isEnrolled = section.students
+      .map((s) => s._id.toString())
+      .includes(student._id.toString());
+
+    if (!isEnrolled) {
+      throw new BadRequestException('Student is not enrolled in this section');
+    }
+
+    const lesson = await this.lessonService.getOneLesson(
+      section.lesson._id.toString(),
+    );
+
+    await this.sectionRepository.removeStudentFromSection(sectionId, studentId);
+
+    await this.studentService.removeSection(
+      sectionId,
+      student.studentId,
+      lesson.unit,
+    );
+
+    return {
+      status: HttpStatus.OK,
+      message: 'Student removed from section successfully',
+    };
+  }
+
+  async studentDropSection(
+    sectionId: string,
+    studentId: string,
+  ): Promise<HttpResponseDto> {
+    const section = await this.sectionRepository.getOne(sectionId);
+    if (!section) {
+      throw new NotFoundException('Section not found');
+    }
+
+    const student = await this.studentService.getStudentById(studentId);
+    if (!student) {
+      throw new NotFoundException('Student not found');
+    }
+
+    const isEnrolled = section.students
+      .map((s) => s._id.toString())
+      .includes(student._id.toString());
+
+    if (!isEnrolled) {
+      throw new BadRequestException('You are not enrolled in this section');
+    }
+
+    const lesson = await this.lessonService.getOneLesson(
+      section.lesson._id.toString(),
+    );
+
+    await this.sectionRepository.removeStudentFromSection(sectionId, studentId);
+
+    await this.studentService.removeSection(
+      sectionId,
+      student.studentId,
+      lesson.unit,
+    );
+
+    return {
+      status: HttpStatus.OK,
+      message: 'Section dropped successfully',
     };
   }
 }

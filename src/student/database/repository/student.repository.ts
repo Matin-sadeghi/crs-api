@@ -72,4 +72,31 @@ export class StudentRepository implements StudentRepositoryPort {
       .populate({ path: 'major', model: 'MajorDocument' })
       .exec();
   }
+
+  async addSection(
+    sectionId: string,
+    studentId: string,
+    lessonUnit: number,
+  ): Promise<void> {
+    const sectionObjectId = new Types.ObjectId(sectionId);
+
+    await this._repository.updateOne(
+      { studentId },
+      { $push: { sectionTaken: sectionObjectId }, $inc: { unit: lessonUnit } },
+    );
+  }
+
+  async removeSection(
+    sectionId: string,
+    studentId: string,
+    lessonUnit: number,
+  ): Promise<void> {
+    await this._repository.updateOne(
+      { studentId },
+      {
+        $pull: { sectionTaken: new Types.ObjectId(sectionId) },
+        $inc: { unit: -lessonUnit },
+      },
+    );
+  }
 }

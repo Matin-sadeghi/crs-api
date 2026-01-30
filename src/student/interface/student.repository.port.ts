@@ -27,4 +27,16 @@ export interface StudentRepositoryPort {
     id: string,
     update: Partial<StudentDocument>,
   ): Promise<StudentDocument | null>;
+
+  addSection(
+    sectionId: string,
+    studentId: string,
+    lessonUnit: number,
+  ): Promise<void>;
+
+  removeSection(
+    sectionId: string,
+    studentId: string,
+    lessonUnit: number,
+  ): Promise<void>;
 }

@@ -187,4 +187,35 @@ export class StudentService {
       message: 'Lesson added to passed lessons successfully',
     };
   }
+
+  async addSection(
+    sectionId: string,
+    studentId: string,
+    lessonUnit: number,
+  ): Promise<HttpResponseDto> {
+    await this.studentRepository.addSection(sectionId, studentId, lessonUnit);
+    return { status: HttpStatus.OK, message: 'section added' };
+  }
+
+  async removeSection(
+    sectionId: string,
+    studentId: string,
+    lessonUnit: number,
+  ): Promise<void> {
+    await this.studentRepository.removeSection(
+      sectionId,
+      studentId,
+      lessonUnit,
+    );
+  }
+  async getAcademicStatus(studentId: string) {
+    const student = await this.getStudentById(studentId);
+
+    return {
+      enrolledSectionIds: (student.sectionTaken || []).map((id) =>
+        id.toString(),
+      ),
+      passedLessonIds: (student.lessonPassed || []).map((id) => id.toString()),
+    };
+  }
 }
