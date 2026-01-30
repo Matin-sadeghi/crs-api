@@ -11,7 +11,8 @@ export const userOption: SchemaOptions = {
 export class UserDocument {
   @Prop({ type: Types.ObjectId })
   _id: Types.ObjectId;
-  @Prop()
+
+  @Prop({ unique: true })
   username: string;
 
   @Prop({ minLength: 3, maxLength: 100 })

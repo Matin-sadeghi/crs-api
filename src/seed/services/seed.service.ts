@@ -19,13 +19,8 @@ export class SeedService {
     private readonly adminRepository: AdminRepositoryPort,
   ) {}
   async createAdminUser(): Promise<HttpResponseDto> {
-    // const admins = await this.userRepository.getAllAdmins();
-    // if (admins.length > 0) {
-    //   return {
-    //     status: HttpStatus.BAD_REQUEST,
-    //     message: 'Admin user already exists',
-    //   };
-    // }
+    const admins = await this.userRepository.getAllAdmins();
+
     const admin = new Types.ObjectId();
     const lastAdmin = await this.adminRepository.findLast();
     const adminId = adminIdGenerator(lastAdmin?.adminId);
@@ -34,7 +29,7 @@ export class SeedService {
     const user = await this.userRepository.createAdmin({
       firstName: `Admin ${adminId}`,
       lastName: `Admin ${adminId}`,
-      username: `admin`,
+      username: admins.length > 0 ? `admin${admins.length + 1}` : `admin`,
       password: hashedPassword,
       gender: UserGender.MALE,
       address: `Admin ${adminId}`,
@@ -53,6 +48,10 @@ export class SeedService {
     return {
       status: HttpStatus.OK,
       message: 'Admin user created successfully',
+      data: {
+        username: user.username,
+        password: `admin`,
+      },
     };
   }
 }
