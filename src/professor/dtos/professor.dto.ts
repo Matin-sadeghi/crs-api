@@ -3,8 +3,10 @@ import {
   IsEnum,
   IsOptional,
   IsString,
+  Matches,
   MaxLength,
   MinLength,
+  Validate,
 } from 'class-validator';
 import { FacultyResponseDto } from 'src/faculty/dtos/faculty.dto';
 import { UserResponseDto } from 'src/user/dtos/user-response.dto';
@@ -25,18 +27,34 @@ export class CreateProfessorDto {
   @IsEnum(UserGender)
   gender!: UserGender;
 
-  @ApiProperty({ minLength: 10, maxLength: 20 })
+  @ApiProperty({
+    example: '0095017240',
+    description: 'Iranian national ID (کد ملی) - 10 digits',
+    minLength: 10,
+    maxLength: 10,
+  })
   @IsString()
+  @Matches(/^\d{10}$/, {
+    message: 'nationalId must be exactly 10 digits (Iranian national ID)',
+  })
   @MinLength(10)
-  @MaxLength(20)
+  @MaxLength(10)
   nationalId: string;
 
-  @ApiProperty({ minLength: 10, maxLength: 12 })
+  @ApiProperty({
+    example: '09123456789',
+    description: 'Iranian mobile number (09xxxxxxxxx or +989xxxxxxxxx)',
+    minLength: 10,
+    maxLength: 12,
+  })
   @IsString()
+  @Matches(/^(\+98|0)?9[1-4]\d{8}$/, {
+    message:
+      'phone must be a valid Iranian mobile number (e.g. 09123456789 or +989123456789)',
+  })
   @MinLength(10)
   @MaxLength(12)
   phone!: string;
-
   @ApiProperty({ minLength: 3 })
   @IsString()
   @MinLength(3)

@@ -106,6 +106,20 @@ export class SectionService {
       throw new BadRequestException('Professor not found');
     }
 
+    // Check professor has no other section at the same time
+    const professorSections = await this.sectionRepository.findByProfessor(
+      createSectionDto.professor,
+    );
+    const professorConflictingSection = this.checkScheduleConflicts(
+      createSectionDto.schedules,
+      professorSections,
+    );
+    if (professorConflictingSection) {
+      throw new BadRequestException(
+        `Professor already has a section at this time. Conflicting section ID: ${professorConflictingSection._id.toString()}`,
+      );
+    }
+
     // Validate classroom exists
 
     const classroom = await this.classroomService.getOneClassroom(
