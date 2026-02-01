@@ -39,4 +39,6 @@ export interface StudentRepositoryPort {
     studentId: string,
     lessonUnit: number,
   ): Promise<void>;
+
+  removePassedLessonFromAllStudents(lessonId: string): Promise<void>;
 }

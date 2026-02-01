@@ -103,6 +103,20 @@ export class StudentService {
       throw new NotFoundException('Student not found');
     }
 
+    if (
+      updateStudentDto.maxUnit &&
+      existingStudent.unit > updateStudentDto.maxUnit
+    ) {
+      throw new BadRequestException(
+        'Max unit cannot be less than student unit',
+      );
+    }
+    if (
+      updateStudentDto.maxUnit &&
+      updateStudentDto.minUnit &&
+      updateStudentDto.maxUnit < updateStudentDto.minUnit
+    )
+      throw new BadRequestException('minUnit can not be bigger that maxUnit');
     await this.userService.updateProfile(
       existingStudent.user._id.toString(),
       updateStudentDto,
@@ -145,9 +159,10 @@ export class StudentService {
 
     // Check if lesson is already in lessonPassed
     const lessonObjectId = lesson._id;
-    const lessonPassedIds = (student.lessonPassed || []).map((id) =>
-      id.toString(),
+    const lessonPassedIds = (student.lessonPassed || []).map((lesson) =>
+      lesson._id.toString(),
     );
+
     if (lessonPassedIds.includes(lessonObjectId.toString())) {
       throw new BadRequestException('Lesson already marked as passed');
     }
@@ -188,6 +203,63 @@ export class StudentService {
     };
   }
 
+  async removeLessonPassed(
+    removeLessonPassedDto: AddLessonPassedDto,
+  ): Promise<HttpResponseDto> {
+    const { studentId, lessonId } = removeLessonPassedDto;
+
+    const student = await this.studentRepository.findOneByStudentId(studentId);
+    if (!student) {
+      throw new NotFoundException('Student not found');
+    }
+
+    const lesson =
+      await this.lessonAdminService.getOneLessonByLessonId(lessonId);
+    const lessonObjectId = lesson._id;
+    const lessonPassedIds = (student.lessonPassed || []).map((l) =>
+      l._id.toString(),
+    );
+
+    if (!lessonPassedIds.includes(lessonObjectId.toString())) {
+      throw new BadRequestException('Lesson is not in student passed lessons');
+    }
+
+    const otherPassedIds = lessonPassedIds.filter(
+      (id) => id !== lessonObjectId.toString(),
+    );
+    if (otherPassedIds.length > 0) {
+      const otherPassedLessons =
+        await this.lessonAdminService.getLessonsById(otherPassedIds);
+      const lessonsUsingAsPrereq = otherPassedLessons.filter((l) =>
+        l.prerequisite?.some(
+          (prereqId) => prereqId.toString() === lessonObjectId.toString(),
+        ),
+      );
+      if (lessonsUsingAsPrereq.length > 0) {
+        const dependentLessonIds = lessonsUsingAsPrereq
+          .map((l) => l.lessonId)
+          .join(', ');
+        throw new BadRequestException(
+          `Cannot remove: this lesson is a prerequisite of other passed lessons (${dependentLessonIds}). Remove those first or revoke them.`,
+        );
+      }
+    }
+
+    const updatedLessonPassed = (student.lessonPassed || []).filter(
+      (l) => l._id.toString() !== lessonObjectId.toString(),
+    );
+
+    await this.studentRepository.update(student._id.toString(), {
+      lessonPassed: updatedLessonPassed,
+      updatedAt: new Date(),
+    });
+
+    return {
+      status: HttpStatus.OK,
+      message: 'Lesson removed from passed lessons successfully',
+    };
+  }
+
   async addSection(
     sectionId: string,
     studentId: string,
@@ -216,6 +288,16 @@ export class StudentService {
         id.toString(),
       ),
       passedLessonIds: (student.lessonPassed || []).map((id) => id.toString()),
+    };
+  }
+
+  async removePassedLessonFromAllStudents(
+    lessonId: string,
+  ): Promise<HttpResponseDto> {
+    await this.studentRepository.removePassedLessonFromAllStudents(lessonId);
+    return {
+      status: HttpStatus.OK,
+      message: 'Lesson removed from all students successfully',
     };
   }
 }

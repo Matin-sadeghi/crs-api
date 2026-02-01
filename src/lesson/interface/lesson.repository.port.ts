@@ -19,4 +19,8 @@ export interface LessonRepositoryPort {
     id: string,
     updateLessonDto: UpdateLessonDto,
   ): Promise<LessonDocument | null>;
+
+  removePrerequisiteFromAllLessons(lessonId: string): Promise<void>;
+
+  getLessonsWithPrerequisite(lessonId: string): Promise<LessonDocument[]>;
 }

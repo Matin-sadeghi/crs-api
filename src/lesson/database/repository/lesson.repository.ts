@@ -17,6 +17,11 @@ export class LessonRepository implements LessonRepositoryPort {
   ) {
     this._repository = repository;
   }
+  getLessonsWithPrerequisite(lessonId: string): Promise<LessonDocument[]> {
+    return this._repository
+      .find({ prerequisite: new Types.ObjectId(lessonId) })
+      .exec();
+  }
 
   async getLessonsById(ids: string[]): Promise<LessonDocument[]> {
     const lessons = await this._repository
@@ -89,5 +94,15 @@ export class LessonRepository implements LessonRepositoryPort {
         model: LessonDocument.name,
       })
       .exec();
+  }
+
+  removePrerequisiteFromAllLessons(lessonId: string): Promise<void> {
+    const id = new Types.ObjectId(lessonId);
+    return this._repository
+      .updateMany(
+        { prerequisite: id },
+        { $pull: { prerequisite: id }, $set: { updatedAt: new Date() } },
+      )
+      .then(() => undefined);
   }
 }

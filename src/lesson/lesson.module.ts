@@ -1,5 +1,7 @@
-import { Module, Provider } from '@nestjs/common';
+import { forwardRef, Module, Provider } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { SectionModule } from 'src/section/section.module';
+import { StudentModule } from 'src/student/student.module';
 import { LessonAdminController } from './controller/lesson-admin.controller';
 import { LessonRepository } from './database/repository/lesson.repository';
 import { LessonDocument, LessonSchema } from './database/schema/lesson.schema';
@@ -14,6 +16,8 @@ const repositories: Provider[] = [
     MongooseModule.forFeature([
       { name: LessonDocument.name, schema: LessonSchema },
     ]),
+    forwardRef(() => SectionModule),
+    forwardRef(() => StudentModule),
   ],
   controllers: [LessonAdminController],
   providers: [...repositories, LessonAdminService],

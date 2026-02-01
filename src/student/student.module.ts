@@ -1,4 +1,4 @@
-import { Module, Provider } from '@nestjs/common';
+import { forwardRef, Module, Provider } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { StudentController } from './controller/student.controller';
@@ -20,7 +20,7 @@ const repositories: Provider[] = [
 @Module({
   imports: [
     MajorModule,
-    LessonModule,
+    forwardRef(() => LessonModule),
     MongooseModule.forFeature([
       {
         name: StudentDocument.name,
@@ -31,6 +31,6 @@ const repositories: Provider[] = [
   ],
   controllers: [StudentController],
   providers: [StudentService, ...repositories],
-  exports: [StudentService],
+  exports: [StudentService, 'STUDENT_REPOSITORY'],
 })
 export class StudentModule {}

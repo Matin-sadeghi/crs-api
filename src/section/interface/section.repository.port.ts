@@ -28,5 +28,7 @@ export interface SectionRepositoryPort {
 
   findByStudent(studentId: string): Promise<SectionDocument[]>;
 
+  findByLesson(lessonId: string): Promise<SectionDocument[]>;
+
   removeStudentFromSection(sectionId: string, studentId: string): Promise<void>;
 }

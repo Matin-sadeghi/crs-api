@@ -1,20 +1,27 @@
 import {
   BadRequestException,
+  forwardRef,
   HttpStatus,
   Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { SectionService } from 'src/section/services/section.service';
 import { HttpResponseDto } from 'src/utils/util.dto';
 import { LessonDocument } from '../database/schema/lesson.schema';
 import { CreateLessonDto, UpdateLessonDto } from '../dtos/lesson-admin.dto';
 import type { LessonRepositoryPort } from '../interface/lesson.repository.port';
+import { StudentService } from 'src/student/services/student.service';
 
 @Injectable()
 export class LessonAdminService {
   constructor(
     @Inject('LESSON_REPOSITORY')
     private readonly lessonRepository: LessonRepositoryPort,
+    @Inject(forwardRef(() => SectionService))
+    private readonly sectionService: SectionService,
+    @Inject(forwardRef(() => StudentService))
+    private readonly studentService: StudentService,
   ) {}
 
   async getAllLessons(): Promise<LessonDocument[]> {
@@ -73,6 +80,14 @@ export class LessonAdminService {
   }
 
   async deleteLesson(id: string): Promise<HttpResponseDto> {
+    const lesson = await this.lessonRepository.getOne(id);
+    if (!lesson) throw new NotFoundException('Lesson not found');
+
+    await this.sectionService.deleteAllSectionsByLessonId(id, lesson.unit);
+    await this.lessonRepository.removePrerequisiteFromAllLessons(id);
+    await this.studentService.removePassedLessonFromAllStudents(
+      lesson._id.toString(),
+    );
     const deletedLesson = await this.lessonRepository.delete(id);
     if (!deletedLesson) throw new NotFoundException('Lesson not found');
 
@@ -92,6 +107,15 @@ export class LessonAdminService {
       throw new NotFoundException('Lesson not found');
     }
 
+    if (existingLesson.unit !== updateLessonDto.unit) {
+      const sections = await this.sectionService.findSectionWithLessonId(
+        existingLesson._id.toString(),
+      );
+      if (sections.length > 0)
+        throw new BadRequestException(
+          `for chnage lesson unit , at first you should remove this lesson section ${sections.map((section) => section._id.toString()).join(', ')}`,
+        );
+    }
     if (
       updateLessonDto.lessonId &&
       updateLessonDto.lessonId !== existingLesson.lessonId

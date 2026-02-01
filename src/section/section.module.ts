@@ -1,4 +1,4 @@
-import { Module, Provider } from '@nestjs/common';
+import { forwardRef, Module, Provider } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ClassroomModule } from 'src/classroom/classroom.module';
 import { LessonModule } from 'src/lesson/lesson.module';
@@ -20,7 +20,7 @@ const repositories: Provider[] = [
   imports: [
     ProfessorModule,
     ClassroomModule,
-    LessonModule,
+    forwardRef(() => LessonModule),
     StudentModule,
     MongooseModule.forFeature([
       { name: SectionDocument.name, schema: SectionSchema },

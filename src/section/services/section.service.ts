@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  forwardRef,
   HttpStatus,
   Inject,
   Injectable,
@@ -21,7 +22,9 @@ export class SectionService {
     private readonly sectionRepository: SectionRepositoryPort,
     private readonly professorService: ProfessorService,
     private readonly classroomService: ClassroomService,
+    @Inject(forwardRef(() => LessonAdminService))
     private readonly lessonService: LessonAdminService,
+    @Inject(forwardRef(() => StudentService))
     private readonly studentService: StudentService,
   ) {}
 
@@ -147,7 +150,48 @@ export class SectionService {
     };
   }
 
+  async deleteAllSectionsByLessonId(
+    lessonId: string,
+    lessonUnit: number,
+  ): Promise<void> {
+    const sections = await this.sectionRepository.findByLesson(lessonId);
+    for (const section of sections) {
+      const students = (section.students || []) as unknown as {
+        studentId: string;
+      }[];
+      for (const student of students) {
+        if (student.studentId) {
+          await this.studentService.removeSection(
+            section._id.toString(),
+            student.studentId,
+            lessonUnit,
+          );
+        }
+      }
+      await this.sectionRepository.delete(section._id.toString());
+    }
+  }
+
   async deleteSection(id: string): Promise<HttpResponseDto> {
+    const section = await this.sectionRepository.getOne(id);
+    if (!section) {
+      throw new NotFoundException('Section not found');
+    }
+
+    const lesson = await this.lessonService.getOneLesson(
+      section.lesson._id.toString(),
+    );
+    const students = (section.students || []) as unknown as {
+      studentId: string;
+    }[];
+    for (const student of students) {
+      await this.studentService.removeSection(
+        id,
+        student.studentId,
+        lesson.unit,
+      );
+    }
+
     const deletedSection = await this.sectionRepository.delete(id);
     if (!deletedSection) {
       throw new NotFoundException('Section not found');
@@ -418,5 +462,10 @@ export class SectionService {
       status: HttpStatus.OK,
       message: 'Section dropped successfully',
     };
+  }
+
+  async findSectionWithLessonId(lessonId: string): Promise<SectionDocument[]> {
+    const sections = await this.sectionRepository.findByLesson(lessonId);
+    return sections;
   }
 }

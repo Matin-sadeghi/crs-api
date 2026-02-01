@@ -32,6 +32,8 @@ export class StudentRepository implements StudentRepositoryPort {
       .find({})
       .populate({ path: 'user', model: 'UserDocument' })
       .populate({ path: 'major', model: 'MajorDocument' })
+      .populate({ path: 'lessonPassed', model: 'LessonDocument' })
+
       .exec();
   }
 
@@ -40,6 +42,8 @@ export class StudentRepository implements StudentRepositoryPort {
       .findById(new Types.ObjectId(id))
       .populate({ path: 'user', model: 'UserDocument' })
       .populate({ path: 'major', model: 'MajorDocument' })
+      .populate({ path: 'lessonPassed', model: 'LessonDocument' })
+
       .exec();
   }
 
@@ -48,6 +52,8 @@ export class StudentRepository implements StudentRepositoryPort {
       .findOne({ studentId })
       .populate({ path: 'user', model: 'UserDocument' })
       .populate({ path: 'major', model: 'MajorDocument' })
+      .populate({ path: 'lessonPassed', model: 'LessonDocument' })
+
       .exec();
   }
 
@@ -98,5 +104,14 @@ export class StudentRepository implements StudentRepositoryPort {
         $inc: { unit: -lessonUnit },
       },
     );
+  }
+
+  async removePassedLessonFromAllStudents(lessonId: string): Promise<void> {
+    await this._repository
+      .updateMany(
+        { lessonPassed: new Types.ObjectId(lessonId) },
+        { $pull: { lessonPassed: new Types.ObjectId(lessonId) } },
+      )
+      .exec();
   }
 }

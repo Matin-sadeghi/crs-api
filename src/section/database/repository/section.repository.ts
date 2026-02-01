@@ -254,6 +254,20 @@ export class SectionRepository implements SectionRepositoryPort {
       .exec();
   }
 
+  async findByLesson(lessonId: string): Promise<SectionDocument[]> {
+    return this._repository
+      .find({ lesson: new Types.ObjectId(lessonId) })
+      .populate({
+        path: 'lesson',
+        model: 'LessonDocument',
+      })
+      .populate({
+        path: 'students',
+        model: 'StudentDocument',
+      })
+      .exec();
+  }
+
   async findByStudent(studentId: string): Promise<SectionDocument[]> {
     return this._repository
       .find({ students: new Types.ObjectId(studentId) })

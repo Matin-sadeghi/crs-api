@@ -85,7 +85,7 @@ export class StudentController {
     return this.studentService.updateStudent(id, updateStudentDto);
   }
 
-  @Post('lesson-passed')
+  @Post('lesson/passed')
   @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Add a lesson to student passed lessons' })
   @ApiResponse({
@@ -95,6 +95,18 @@ export class StudentController {
     @Body() addLessonPassedDto: AddLessonPassedDto,
   ): Promise<HttpResponseDto> {
     return this.studentService.addLessonPassed(addLessonPassedDto);
+  }
+
+  @Delete('lesson/passed')
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: 'Remove a lesson from student passed lessons' })
+  @ApiResponse({
+    type: HttpResponseDto,
+  })
+  async removeLessonPassed(
+    @Body() removeLessonPassedDto: AddLessonPassedDto,
+  ): Promise<HttpResponseDto> {
+    return await this.studentService.removeLessonPassed(removeLessonPassedDto);
   }
 
   @Get('me/academic-status')
