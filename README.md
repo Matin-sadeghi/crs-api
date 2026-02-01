@@ -275,8 +275,8 @@ Or use the same endpoint from the Swagger UI at `http://localhost:3000/api/docs`
 
 **Default admin login credentials:**
 
-| Field    | Value  |
-| -------- | ------ |
+| Field    | Value   |
+| -------- | ------- |
 | Username | `admin` |
 | Password | `admin` |
 
@@ -286,17 +286,17 @@ Use these to log in at `POST /auth/login` or via Swagger.
 
 ### Quick Reference
 
-| Step | Action                    | Command / Action                          |
-|------|---------------------------|-------------------------------------------|
-| 1    | Install Node.js (v20+)    | See Step 1 for your OS                    |
-| 2    | Install MongoDB           | See Step 2 (local or Atlas)                |
-| 3    | Verify                    | `node -v`, `npm -v`                        |
-| 4    | Clone repo                | `git clone <url> && cd crs-api`            |
-| 5    | Install dependencies (in `crs-api` folder) | `npm install` or `npm i`           |
-| 6    | Create `.env`             | Copy env vars from Step 6                  |
-| 7    | Run app                   | `npm run start:dev`                        |
-| 8    | Open docs                 | http://localhost:3000/api/docs             |
-| 9    | Run seed (required)      | `POST http://localhost:3000/seed/admin-user` — then login with **admin** / **admin** |
+| Step | Action                                     | Command / Action                                                                     |
+| ---- | ------------------------------------------ | ------------------------------------------------------------------------------------ |
+| 1    | Install Node.js (v20+)                     | See Step 1 for your OS                                                               |
+| 2    | Install MongoDB                            | See Step 2 (local or Atlas)                                                          |
+| 3    | Verify                                     | `node -v`, `npm -v`                                                                  |
+| 4    | Clone repo                                 | `git clone <url> && cd crs-api`                                                      |
+| 5    | Install dependencies (in `crs-api` folder) | `npm install` or `npm i`                                                             |
+| 6    | Create `.env`                              | Copy env vars from Step 6                                                            |
+| 7    | Run app                                    | `npm run start:dev`                                                                  |
+| 8    | Open docs                                  | http://localhost:3000/api/docs                                                       |
+| 9    | Run seed (required)                        | `POST http://localhost:3000/seed/admin-user` — then login with **admin** / **admin** |
 
 ---
 
@@ -321,11 +321,13 @@ JWT_EXPIRES_IN=7d
 ## 📚 API Documentation
 
 Once the server is running, access the Swagger documentation at:
+
 ```
 http://localhost:3000/api/docs
 ```
 
 The API documentation provides:
+
 - Interactive API explorer
 - Request/response schemas
 - Authentication testing
@@ -334,23 +336,27 @@ The API documentation provides:
 ## 📦 Modules
 
 ### User Module
+
 - User registration and management
 - Role-based user profiles (Admin, Student, Professor)
 - User authentication
 
 ### Auth Module
+
 - JWT token generation and validation
 - Login/logout functionality
 - Role-based access control (RBAC)
 - Protected routes with guards
 
 ### Lesson Module
+
 - Course/lesson creation and management
 - Prerequisite management
 - Lesson types (General, Specialized, Mandatory, Elective, Lab)
 - Unit management
 
 ### Section Module
+
 - Section creation with scheduling
 - Time slot conflict detection
 - Classroom assignment
@@ -358,25 +364,30 @@ The API documentation provides:
 - Student enrollment management
 
 ### Classroom Module
+
 - Classroom management
 - Capacity tracking
 - Faculty association
 - Room number validation
 
 ### Student Module
+
 - Student profile management
 - Major assignment
 - Student ID generation
 
 ### Professor Module
+
 - Professor profile management
 - Education credentials
 - Faculty association
 
 ### Faculty Module
+
 - Faculty/department management
 
 ### Major Module
+
 - Academic major/degree program management
 
 ## 🔒 Authentication
@@ -387,11 +398,12 @@ The API uses JWT (JSON Web Tokens) for authentication:
    - Returns JWT token and user information
 
 2. **Protected Routes**: Include token in Authorization header
+
    ```
    Authorization: Bearer <your-jwt-token>
    ```
 
-3. **Roles**: 
+3. **Roles**:
    - `ADMIN`: Full system access
    - `PROFESSOR`: Professor-specific operations
    - `STUDENT`: Student-specific operations
@@ -422,9 +434,11 @@ The API uses JWT (JSON Web Tokens) for authentication:
 ## 📡 API Endpoints
 
 ### Authentication
+
 - `POST /auth/login` - User login
 
 ### Lessons
+
 - `GET /lesson-admin` - Get all lessons
 - `GET /lesson-admin/:id` - Get lesson by ID
 - `POST /lesson-admin` - Create lesson (Admin only)
@@ -432,6 +446,7 @@ The API uses JWT (JSON Web Tokens) for authentication:
 - `DELETE /lesson-admin/:id` - Delete lesson (Admin only)
 
 ### Sections
+
 - `GET /section` - Get all sections
 - `GET /section/:id` - Get section by ID
 - `POST /section` - Create section (Admin only)
@@ -439,6 +454,7 @@ The API uses JWT (JSON Web Tokens) for authentication:
 - `DELETE /section/:id` - Delete section (Admin only)
 
 ### Classrooms
+
 - `GET /classroom` - Get all classrooms
 - `GET /classroom/:id` - Get classroom by ID
 - `POST /classroom` - Create classroom (Admin only)
@@ -446,36 +462,43 @@ The API uses JWT (JSON Web Tokens) for authentication:
 - `DELETE /classroom/:id` - Delete classroom (Admin only)
 
 ### Students
+
 - `GET /student` - Get all students
 - `POST /student` - Create student
 
 ### Professors
+
 - `GET /professor` - Get all professors
 - `POST /professor` - Create professor
 
 ### Faculties
+
 - `GET /faculty` - Get all faculties
 - `POST /faculty` - Create faculty
 
 ### Majors
+
 - `GET /major` - Get all majors
 - `POST /major` - Create major
 
 ## 🎯 Key Features
 
 ### Section Scheduling
+
 - Automatic conflict detection for classroom time slots
 - Support for multiple schedules per section
 - Time format validation (HH:mm, 24-hour format)
 - Day-of-week enum validation
 
 ### Data Validation
+
 - Comprehensive input validation
 - Regex patterns for time formats
 - Enum validation for roles and types
 - MongoDB ObjectId validation
 
 ### Security
+
 - Password hashing with bcrypt
 - JWT token-based authentication
 - Role-based access control
@@ -519,7 +542,7 @@ This project is licensed under the UNLICENSED License.
 
 ## 👤 Author
 
-Your Name
+Matin Sadeghi
 
 ## 🙏 Acknowledgments
 
