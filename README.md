@@ -216,7 +216,7 @@ Add the following (adjust if you use Atlas or different port):
 
 ```env
 MONGO_URI_CONN=mongodb://localhost:27017/crs
-PORT=3000
+PORT=3001
 JWT_SECRET=your-secret-key-here
 JWT_EXPIRES_IN=7d
 ```
@@ -239,7 +239,7 @@ You should see something like:
 
 ```
 [Nest] ... LOG [NestApplication] Nest application successfully started
-[Nest] ... LOG Application is running on: http://localhost:3000
+[Nest] ... LOG Application is running on: http://localhost:3001
 ```
 
 **Production mode** (build then run):
@@ -254,10 +254,10 @@ npm run start:prod
 ### Step 8: Verify the API
 
 1. **Health check**: Open in browser or with curl:
-   - `http://localhost:3000` (or the port you set in `.env`).
+   - `http://localhost:3001` (or the port you set in `.env`).
 
 2. **Swagger API docs**:
-   - Open: **http://localhost:3000/api/docs**
+   - Open: **http://localhost:3001/api/docs**
 
 3. **Next:** Run the seed (Step 9) so you can log in. Default credentials are **username:** `admin`, **password:** `admin`.
 
@@ -268,10 +268,10 @@ npm run start:prod
 **You need to run the seed** after the project is running to create the initial admin user. Without this, you cannot log in.
 
 ```bash
-curl -X POST http://localhost:3000/seed/admin-user
+curl -X POST http://localhost:3001/seed/admin-user
 ```
 
-Or use the same endpoint from the Swagger UI at `http://localhost:3000/api/docs`.
+Or use the same endpoint from the Swagger UI at `http://localhost:3001/api/docs`.
 
 **Default admin login credentials:**
 
@@ -295,8 +295,8 @@ Use these to log in at `POST /auth/login` or via Swagger.
 | 5    | Install dependencies (in `crs-api` folder) | `npm install` or `npm i`                                                             |
 | 6    | Create `.env`                              | Copy env vars from Step 6                                                            |
 | 7    | Run app                                    | `npm run start:dev`                                                                  |
-| 8    | Open docs                                  | http://localhost:3000/api/docs                                                       |
-| 9    | Run seed (required)                        | `POST http://localhost:3000/seed/admin-user` — then login with **admin** / **admin** |
+| 8    | Open docs                                  | http://localhost:3001/api/docs                                                       |
+| 9    | Run seed (required)                        | `POST http://localhost:3001/seed/admin-user` — then login with **admin** / **admin** |
 
 ---
 
@@ -313,7 +313,7 @@ Create a `.env` file in the root directory:
 
 ```env
 MONGO_URI_CONN=mongodb://localhost:27017/crs
-PORT=3000
+PORT=3001
 JWT_SECRET=your-secret-key-here
 JWT_EXPIRES_IN=7d
 ```
@@ -323,7 +323,7 @@ JWT_EXPIRES_IN=7d
 Once the server is running, access the Swagger documentation at:
 
 ```
-http://localhost:3000/api/docs
+http://localhost:3001/api/docs
 ```
 
 The API documentation provides:
@@ -552,4 +552,4 @@ Matin Sadeghi
 
 ---
 
-For more information, visit the [API Documentation](http://localhost:3000/api/docs) when the server is running.
+For more information, visit the [API Documentation](http://localhost:3001/api/docs) when the server is running.
